@@ -66,6 +66,7 @@ let Game ={
         this.canvas.width=512;
         this.canvas.height=512;
         this.context=this.canvas.getContext("2d");
+        this.canvas.style.cssText='border: 2px solid black;';
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
         this.interval = setInterval(update(), 250);
         this.inGame=true;
