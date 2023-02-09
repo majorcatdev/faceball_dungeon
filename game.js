@@ -2,6 +2,7 @@
 let global ={
     lastTime: 0,
     gameTime: 0,
+    
 }
 
 
@@ -9,9 +10,52 @@ let Constants={
     keydown:{},
 }
 
+class ballSprite{
+   
+    constructor(x,y, diamater){
+        this.x=x;
+        this.y=y;
+        this.diamater=diamater;
+    }
+    draw(){
+        Game.context.beginPath();
+        Game.context.arc(this.x,this.y,this.diamater/2,0,2*Math.PI);
+        Game.context.stroke();
+    }
+    move(x,y){
+        this.x+=x;
+        this.y+=y;
+    }
+    setPosition(x,y){
+        this.x=x;
+        this.y=y;
+    }
+    setDiamater(diamater){
+        this.diamater=diamater;
+    }
+    update(){
+        this.draw();
+        if(this.x>=(Game.canvas.width)-this.diamater){
+            this.x=0;
+        }else{
+            this.move(1,0);
+        }
+    }
+}
+
+let sprites=[];
+
+function generateCircles(number){
+    for(let i=0; i<number; i++){
+        sprites.push(new ballSprite(Math.floor(Math.random() * 513),Math.floor(Math.random() * 513),Math.floor(Math.random() * 200)+1));
+    }
+}
+
+
 function startGame(){
     Game.start();
     setupy();
+    generateCircles(Math.floor(Math.random() * 15)+1);
 }
 
 
@@ -82,6 +126,11 @@ addEventListener("keyUp",function(e){
 
 
 
+function updateSprites(){
+    for(let i=0; i<sprites.length; i++){
+        sprites[i].update();
+    }
+}
 
 
 
@@ -99,15 +148,9 @@ addEventListener("keyUp",function(e){
 
 
 
-let x=0;
 
 
 function update(){
-    Game.context.beginPath();
-    Game.context.arc(x,75,50,0,2*Math.PI);
-    x++;
-    Game.context.stroke();
-    if(x>=412){
-        x=0;
-    }
+    
+    updateSprites();
 }
