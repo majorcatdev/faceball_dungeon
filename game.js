@@ -5,21 +5,24 @@ let global ={
     sprites: [],
     pool: [],
     score:0,
+    spawnCounter:0,
 }
 
 
 let Constants={
-    
+    fallSpeed:2,
     startWidth:400,
+    maxCircleSize:50,
 }
 
 function randint(min, max) {
-    return Math.random() * (max - min) + min;
+    return Math.floor(Math.random() * (max - min+1) + min);
 }
+
 
 class Circle{
    
-    constructor(x,y, diamater, color,fallSpeed){
+    constructor(x,y, diamater, color, fallSpeed){
         this.x=x;
         this.y=y;
         this.diamater=diamater;
@@ -28,8 +31,9 @@ class Circle{
     }
     draw(){
         Game.context.beginPath();
-        Game.context.fillStyle = this.color;
         Game.context.arc(this.x,this.y,this.diamater/2,0,2*Math.PI);
+        Game.context.fillStyle = this.color;
+        Game.context.fill();
         Game.context.stroke();
     }
     move(x,y){
@@ -51,11 +55,11 @@ class Circle{
     }
     update(){
         this.draw();
-        if(this.y>=(Game.canvas.height-this.diamater)){
+        if(this.y>=(Game.canvas.height-(this.diamater/2))){
             this.removeFromSprites();
 
         }else{
-            this.move(0,1);
+            this.move(0,this.fallSpeed);
         }
     }
 }
@@ -112,11 +116,24 @@ class Rectangle{
     }
 }
 
-function circleMaker(number){
-    for(let i=0; i<number; i++){
-        random.
-        global.sprites.push(new Circle())
+function circleMaker(){
+    
+    const width=randint(10,Constants.maxCircleSize);
+    let r=0;
+    let g=0;
+    let b=0;
+    while(true){
+        r=randint(0,255);
+        g=randint(0,255);
+        b=randint(0,255);
+        if(!((r>g+40||r<g-40)&&(r>b+40||r<b-40)&&(b>g+40||b<g-40))){
+            break;
+        }
     }
+    const color='rgb('+r+','+g+','+b+')';
+    let circle=new Circle(randint(width/2,512-(width/2)),(width/2),width,color,Constants.fallSpeed);
+    global.sprites.push(circle);
+    
 }
 
 function startGame(){
@@ -256,6 +273,16 @@ global.sprites.push(player);
 function update(){
     
     updateSprites();
+    global.spawnCounter++;
+    if(global.spawnCounter>=10){
+        
+        if(randint(0,1)==1){
+            circleMaker();
+        }
+        
+        
+        global.spawnCounter=0;
+    }
 }
 
 //make ball falling collecting game
