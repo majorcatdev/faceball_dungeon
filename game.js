@@ -25,7 +25,44 @@ class Ball{
     }
     draw(){
         Game.context.beginPath();
-        Game.context.fillStyle = this.color;
+        Game.context.fillStyle = rgb(this.color[0],this.color[1],this.color[2]);
+        Game.context.fill();
+        Game.context.arc(this.x,this.y,this.diamater/2,0,2*Math.PI);
+        Game.context.stroke();
+    }
+    move(x,y){
+        this.x+=x;
+        this.y+=y;
+    }
+    setPosition(x,y){
+        this.x=x;
+        this.y=y;
+    }
+
+    update(){
+        this.draw();
+        if(this.y>=(Game.canvas.height-this.diamater)){
+            global.sprites.splice(global.sprites.indexOf(this),1);
+            
+
+        }else{
+            this.move(0,1);
+        }
+    }
+}
+
+class Square{
+   
+    constructor(x,y, width, height, color){
+        this.x=x;
+        this.y=y;
+        this.width=width;
+        this.height=height.
+        this.color = color;
+    }
+    draw(){
+        Game.context.beginPath();
+        Game.context.fillStyle = rgb(this.color[0],this.color[1],this.color[2]);
         Game.context.fill();
         Game.context.arc(this.x,this.y,this.diamater/2,0,2*Math.PI);
         Game.context.stroke();
@@ -48,8 +85,6 @@ class Ball{
         }
     }
 }
-
-
 
 
 function startGame(){
@@ -166,13 +201,13 @@ function updateSprites(){
 
 
 
-
+// if 32 in global.keysDown do something
 
 
 
 let ball = new Ball(100,100,20, "red");
 function update(){
-    ball.draw()
+    
     updateSprites();
 }
 
