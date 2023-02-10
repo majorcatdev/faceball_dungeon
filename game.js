@@ -1,5 +1,5 @@
 let global ={
-    keyDown:{},
+    keysDown:{},
     lastTime: 0,
     gameTime: 0,
     sprites: [],
@@ -17,18 +17,18 @@ function randint(min, max) {
     return Math.random() * (max - min) + min;
 }
 
-class Ball{
+class Circle{
    
-    constructor(x,y, diamater, color){
+    constructor(x,y, diamater, color,fallSpeed){
         this.x=x;
         this.y=y;
         this.diamater=diamater;
         this.color = color;
+        this.fallSpeed=fallSpeed;
     }
     draw(){
         Game.context.beginPath();
         Game.context.fillStyle = this.color;
-        Game.context.fill();
         Game.context.arc(this.x,this.y,this.diamater/2,0,2*Math.PI);
         Game.context.stroke();
     }
@@ -41,11 +41,18 @@ class Ball{
         this.y=y;
     }
 
+    removeFromSprites(){
+        try {
+            global.sprites.splice(global.sprites.indexOf(this),1);
+        } catch (error) {
+            return false;
+        }
+        
+    }
     update(){
         this.draw();
         if(this.y>=(Game.canvas.height-this.diamater)){
-            global.sprites.splice(global.sprites.indexOf(this),1);
-            
+            this.removeFromSprites();
 
         }else{
             this.move(0,1);
@@ -65,8 +72,7 @@ class Rectangle{
     draw(){
         Game.context.beginPath();
         Game.context.fillStyle = this.color;
-        Game.context.fill();
-        Game.context.rect(this.x,this.y,this.width,this.height);
+        Game.context.fillRect(this.x,this.y,this.width,this.height);
         Game.context.stroke();
     }
     move(x,y){
@@ -78,16 +84,27 @@ class Rectangle{
         this.y=y;
     }
 
+    removeFromSprites(){
+        try {
+            global.sprites.splice(global.sprites.indexOf(this),1);
+        } catch (error) {
+            return false;
+        }
+        
+    }
+
     update(){
         
         if(this.x>=0){
-            if(65 in global.keyDown){
+            if(65 in global.keysDown){
                 this.move(-5,0);
+                console.log("a is pressed");
             }
         }
-        if(this.x+this.width>=512){
-            if(68 in global.keyDown){
+        if(this.x+this.width<512){
+            if(68 in global.keysDown){
                 this.move(5,0);
+                console.log("d is pressed");
             }
         }
 
@@ -95,6 +112,12 @@ class Rectangle{
     }
 }
 
+function circleMaker(number){
+    for(let i=0; i<number; i++){
+        random.
+        global.sprites.push(new Circle())
+    }
+}
 
 function startGame(){
     Game.start();
@@ -104,10 +127,10 @@ function startGame(){
 
 function rectCollision(rect1, rect2){
     return (
-        rect1.x < rect2.x + rect2.w &&
-        rect1.x + rect1.w > rect2.x &&
-        rect1.y < rect2.y + rect2.h &&
-        rect1.h + rect1.y > rect2.y
+        rect1.x < rect2.x + rect2.width &&
+        rect1.x + rect1.width > rect2.x &&
+        rect1.y < rect2.y + rect2.height &&
+        rect1.height + rect1.y > rect2.y
     ) 
       
 }
@@ -116,9 +139,23 @@ function circleCollision(circle1, circle2){
     const dx = circle1.x - circle2.x;
     const dy = circle1.y - circle2.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
-    return (distance < circle1.radius + circle2.radius);
+    return (distance < (circle1.diamater/2) + (circle2.diamater/2));
 }
 
+function differentColiderCollision(rect,circle){
+    const distX = Math.abs(circle.x - rect.x-rect.width/2);
+    const distY = Math.abs(circle.y - rect.y-rect.height/2);
+
+    if (distX > (rect.width/2 + circle.diamater/2)) { return false; }
+    if (distY > (rect.height/2 + circle.diamater/2)) { return false; }
+
+    if (distX <= (rect.width/2)) { return true; } 
+    if (distY <= (rect.height/2)) { return true; }
+
+    const dx=distX-rect.width/2;
+    const dy=distY-rect.height/2;
+    return (dx*dx+dy*dy<=((circle.diamater/2)*(circle.diamater/2)));
+}
 
 
 let Game ={
@@ -214,7 +251,7 @@ function updateSprites(){
 
 
 
-let player=new Rectangle(0,512-40,Constants.startWidth,40);
+let player=new Rectangle(0,512-40,Constants.startWidth, 40, 'rgb(0,0,0)');
 global.sprites.push(player);
 function update(){
     
