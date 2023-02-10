@@ -176,4 +176,4 @@ function update(){
     updateSprites();
 }
 
-	//make ball falling collecting game
+//make ball falling collecting game
