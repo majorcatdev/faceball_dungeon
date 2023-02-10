@@ -1,14 +1,16 @@
 let global ={
+    keyDown:{},
     lastTime: 0,
     gameTime: 0,
     sprites: [],
     pool: [],
-   
+    score:0,
 }
 
 
 let Constants={
-    keydown:{},
+    
+    startWidth:400,
 }
 
 function randint(min, max) {
@@ -25,7 +27,7 @@ class Ball{
     }
     draw(){
         Game.context.beginPath();
-        Game.context.fillStyle = rgb(this.color[0],this.color[1],this.color[2]);
+        Game.context.fillStyle = this.color;
         Game.context.fill();
         Game.context.arc(this.x,this.y,this.diamater/2,0,2*Math.PI);
         Game.context.stroke();
@@ -51,20 +53,20 @@ class Ball{
     }
 }
 
-class Square{
+class Rectangle{
    
     constructor(x,y, width, height, color){
         this.x=x;
         this.y=y;
         this.width=width;
-        this.height=height.
+        this.height=height;
         this.color = color;
     }
     draw(){
         Game.context.beginPath();
-        Game.context.fillStyle = rgb(this.color[0],this.color[1],this.color[2]);
+        Game.context.fillStyle = this.color;
         Game.context.fill();
-        Game.context.arc(this.x,this.y,this.diamater/2,0,2*Math.PI);
+        Game.context.rect(this.x,this.y,this.width,this.height);
         Game.context.stroke();
     }
     move(x,y){
@@ -77,12 +79,19 @@ class Square{
     }
 
     update(){
-        this.draw();
-        if(this.x>=(Game.canvas.width-this.diamater)){
-            this.x=0;
-        }else{
-            this.move(1,0);
+        
+        if(this.x>=0){
+            if(65 in global.keyDown){
+                this.move(-5,0);
+            }
         }
+        if(this.x+this.width>=512){
+            if(68 in global.keyDown){
+                this.move(5,0);
+            }
+        }
+
+        this.draw();
     }
 }
 
@@ -158,11 +167,11 @@ let requestAnimFrame = (function(){
 })()
 
 addEventListener("keyDown",function(e){
-    Constants.keysDown[e.keyCode]=true;
+    global.keysDown[e.keyCode]=true;
 
 },false)
 addEventListener("keyUp",function(e){
-    delete Constants.keysDown[e.keyCode];
+    delete global.keysDown[e.keyCode];
 
 },false)
 
@@ -205,7 +214,8 @@ function updateSprites(){
 
 
 
-let ball = new Ball(100,100,20, "red");
+let player=new Rectangle(0,512-40,Constants.startWidth,40);
+global.sprites.push(player);
 function update(){
     
     updateSprites();
