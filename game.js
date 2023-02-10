@@ -45,18 +45,23 @@ class Circle{
         this.y=y;
     }
 
-    removeFromSprites(){
+    selfDestruct(){
         try {
             global.sprites.splice(global.sprites.indexOf(this),1);
         } catch (error) {
-            return false;
+            return (false,"spritelist error");
+        }
+        try {
+            global.pool.splice(global.pool.indexOf(this),1);
+        } catch (error) {
+            return (false,"pool error");
         }
         
     }
     update(){
         this.draw();
         if(this.y>=(Game.canvas.height-(this.diamater/2))){
-            this.removeFromSprites();
+            this.selfDestruct();
 
         }else{
             this.move(0,this.fallSpeed);
@@ -87,6 +92,8 @@ class Rectangle{
         this.x=x;
         this.y=y;
     }
+
+
 
     removeFromSprites(){
         try {
@@ -126,13 +133,14 @@ function circleMaker(){
         r=randint(0,255);
         g=randint(0,255);
         b=randint(0,255);
-        if(!((r>g+40||r<g-40)&&(r>b+40||r<b-40)&&(b>g+40||b<g-40))){
+        if(!((r>g+60||r<g-60)&&(r>b+60||r<b-60)&&(b>g+60||b<g-60))){
             break;
         }
     }
     const color='rgb('+r+','+g+','+b+')';
     let circle=new Circle(randint(width/2,512-(width/2)),(width/2),width,color,Constants.fallSpeed);
     global.sprites.push(circle);
+    global.pool.push(circle);
     
 }
 
@@ -256,7 +264,21 @@ function updateSprites(){
 
 
 
-
+function gameLogic(){
+    if(global.pool.length > 0){
+        for(let i=0; i<global.pool.length; i++){
+            if(differentColiderCollision(player,global.pool[i])){
+                global.score++;
+                global.pool[i].selfDestruct();
+                console.log("score:"+global.score);
+                if(player.width>10){
+                    player.width--;
+                    player.move(1,0);
+                }
+            }
+        }
+    }
+}
 
 
 
@@ -271,8 +293,8 @@ function updateSprites(){
 let player=new Rectangle(0,512-40,Constants.startWidth, 40, 'rgb(0,0,0)');
 global.sprites.push(player);
 function update(){
-    
     updateSprites();
+    gameLogic();
     global.spawnCounter++;
     if(global.spawnCounter>=10){
         
