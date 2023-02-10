@@ -1,8 +1,9 @@
-
 let global ={
     lastTime: 0,
     gameTime: 0,
-    
+    sprites: [],
+    pool: [],
+   
 }
 
 
@@ -10,15 +11,22 @@ let Constants={
     keydown:{},
 }
 
-class ballSprite{
+function randint(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+class Ball{
    
-    constructor(x,y, diamater){
+    constructor(x,y, diamater, color){
         this.x=x;
         this.y=y;
         this.diamater=diamater;
+        this.color = color;
     }
     draw(){
         Game.context.beginPath();
+        Game.context.fillStyle = this.color;
+        Game.context.fill();
         Game.context.arc(this.x,this.y,this.diamater/2,0,2*Math.PI);
         Game.context.stroke();
     }
@@ -30,12 +38,10 @@ class ballSprite{
         this.x=x;
         this.y=y;
     }
-    setDiamater(diamater){
-        this.diamater=diamater;
-    }
+
     update(){
         this.draw();
-        if(this.x>=(Game.canvas.width)-this.diamater){
+        if(this.x>=(Game.canvas.width-this.diamater)){
             this.x=0;
         }else{
             this.move(1,0);
@@ -43,19 +49,13 @@ class ballSprite{
     }
 }
 
-let sprites=[];
 
-function generateCircles(number){
-    for(let i=0; i<number; i++){
-        sprites.push(new ballSprite(Math.floor(Math.random() * 513),Math.floor(Math.random() * 513),Math.floor(Math.random() * 200)+1));
-    }
-}
 
 
 function startGame(){
     Game.start();
     setupy();
-    generateCircles(Math.floor(Math.random() * 15)+1);
+   
 }
 
 
@@ -71,12 +71,12 @@ let Game ={
         this.interval = setInterval(update(), 250);
         this.inGame=true;
     },
-    
+   
 
     clear: function(){
-        
+       
         this.context.clearRect(0,0, this.canvas.width, this.canvas.height);
-        
+       
     },
 
 
@@ -88,6 +88,7 @@ function setupy(){
         let dt=(now-global.lastTime)/1000.0;
         Game.clear();
         update();
+       
         global.gameTime=dt;
         global.lastTime=now;
         requestAnimFrame(setupy);
@@ -128,8 +129,10 @@ addEventListener("keyUp",function(e){
 
 
 function updateSprites(){
-    for(let i=0; i<sprites.length; i++){
-        sprites[i].update();
+    if(global.sprites.length > 0){
+        for(let i=0; i<global.sprites.length; i++){
+            global.sprites[i].update();
+        }
     }
 }
 
@@ -150,8 +153,10 @@ function updateSprites(){
 
 
 
-
+let ball = new Ball(100,100,20, "red");
 function update(){
-    
+    ball.draw()
     updateSprites();
 }
+
+	
