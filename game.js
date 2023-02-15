@@ -123,17 +123,12 @@ class spriteBlock{
         this.width=0;
         if(this.sprites.length > 0){
             this.width=Math.abs(this.sprites[0].x-this.sprites[this.sprites.length-1].x);
-            
-            
         }
     }
 
     updateWidth(){
-
         if(this.sprites.length > 0){
-            this.width=Math.abs(this.sprites[0].x-this.sprites[this.sprites.length-1].x);
-            
-            
+            this.width=Math.abs(this.sprites[0].x-this.sprites[this.sprites.length-1].x); 
         }
     }
 
@@ -345,6 +340,7 @@ function invaderUpdate(){
 
 // if 32 in global.keysDown do something
 
+//impliment sprite block space invaders movement
 
 
 let player=new Rectangle(0,512-40,Constants.startWidth, 40, 'rgb(0,0,0)');
