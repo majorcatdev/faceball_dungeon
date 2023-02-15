@@ -26,6 +26,7 @@ class Circle{
         this.x=x;
         this.y=y;
         this.diamater=diamater;
+        this.width=diamater;
         this.color = color;
         this.fallSpeed=fallSpeed;
     }
@@ -114,6 +115,92 @@ class Rectangle{
             }
             */
         this.draw();
+    }
+}
+
+class spriteBlock{
+    
+   
+    constructor(x,y, height, sprites){
+        this.x=x;
+        this.y=y;
+        this.height=height;
+        this.sprites=sprites;
+        this.width=0;
+        if(this.sprites.length > 0){
+            this.width=Math.abs(this.sprites[0].x-this.sprites[this.sprites.length-1].x);
+            
+            
+        }
+    }
+
+    updateWidth(){
+
+        if(this.sprites.length > 0){
+            this.width=this.sprites[0].x-this.sprites[this.sprites.length-1].x;
+            
+            
+        }
+    }
+
+    move(x,y){
+        if(this.sprites.length > 0){
+            
+            for(let i=1; i<this.sprites.length; i++){
+                this.sprites[i].move(x,y);
+            }
+        }
+        this.x=x;
+        this.y=y;
+    }
+
+    setPosition(x,y){
+        let xOffset=0;
+        let yOffset=0;
+        if(x<this.x){
+            xOffset=x-this.x;
+        }else if(x>this.x){
+            xOffset=this.x-x;
+        }
+        if(y<this.y){
+            yOffset=y-this.y;
+        }else if(y>this.y){
+            yOffset=this.y-y;
+        }
+        this.move(xOffset,yOffset);
+
+
+    }
+
+    selfDestruct(){
+        if(this.sprites.length > 0){
+            for(let i=0; i<this.sprites.length; i++){
+                try {
+                    global.sprites.splice(global.sprites.indexOf(this.sprites[i]),1);
+                } catch (error) {
+                    return (false,"spritelist error object "+i+" not found");
+                }
+                
+            }
+        }
+        if(global.pool.length>0){
+            try {
+                global.pool.splice(global.pool.indexOf(this),1);
+            } catch (error) {
+                return (false,"pool error");
+            }
+        
+        }
+    }
+
+    update(){
+        if(this.sprites.length > 0){
+           
+            
+            for(let i=1; i<this.sprites.length; i++){
+                this.sprites[i].update();
+            }
+        }
     }
 }
 
@@ -264,7 +351,9 @@ function updateSprites(){
 
 
 
+function invaderUpdate(){
 
+}
 
 
 
