@@ -17,23 +17,28 @@ function randint(min, max) {
     return Math.floor(Math.random() * (max - min+1) + min);
 }
 
+class logicBlock{
+    constructor()
+}
 
 class Circle{
    
-    constructor(x,y, diamater, color, fallSpeed){
+    constructor(x,y, diamater, color){
         this.x=x;
         this.y=y;
         this.diamater=diamater;
         this.width=diamater;
         this.color = color;
-        this.fallSpeed=fallSpeed;
+        this.draw=true;
     }
     draw(){
-        Game.context.beginPath();
-        Game.context.arc(this.x,this.y,this.diamater/2,0,2*Math.PI);
-        Game.context.fillStyle = this.color;
-        Game.context.fill();
-        Game.context.stroke();
+        if(this.draw){
+            Game.context.beginPath();
+            Game.context.arc(this.x,this.y,this.diamater/2,0,2*Math.PI);
+            Game.context.fillStyle = this.color;
+            Game.context.fill();
+            Game.context.stroke();
+        }
     }
     move(x,y){
         this.x+=x;
@@ -67,12 +72,16 @@ class Rectangle{
         this.width=width;
         this.height=height;
         this.color = color;
+        this.draw=true;
     }
     draw(){
-        Game.context.beginPath();
-        Game.context.fillStyle = this.color;
-        Game.context.fillRect(this.x,this.y,this.width,this.height);
-        Game.context.stroke();
+        if(this.draw){
+            Game.context.beginPath();
+            Game.context.fillStyle = this.color;
+            Game.context.fillRect(this.x,this.y,this.width,this.height);
+            Game.context.stroke();
+        }
+        
     }
     move(x,y){
         this.x+=x;
@@ -122,13 +131,48 @@ class spriteBlock{
         this.sprites=sprites;
         this.width=0;
         if(this.sprites.length > 0){
-            this.width=Math.abs(this.sprites[0].x-this.sprites[this.sprites.length-1].x);
+            let low=this.sprites[0].x;
+            let high=this.sprites[0].x+this.sprites[0].width;
+
+            for(let i=1; i<this.sprites.length; i++){
+
+                if(this.sprites[i].x<low){
+                    low=this.sprites[i].x;
+                }
+
+                if(this.sprites[i].x+this.sprites[i].width>high){
+                    high=this.sprites[i].x+this.sprites[i].width;
+                }
+
+            }
+
+            this.width=Math.abs(low-high); 
+        
         }
     }
 
     updateWidth(){
         if(this.sprites.length > 0){
-            this.width=Math.abs(this.sprites[0].x-this.sprites[this.sprites.length-1].x); 
+            let low=this.sprites[0].x;
+            let high=this.sprites[0].x+this.sprites[0].width;
+
+            for(let i=1; i<this.sprites.length; i++){
+
+                if(this.sprites[i].x<low){
+                    low=this.sprites[i].x;
+                }
+
+                if(this.sprites[i].x+this.sprites[i].width>high){
+                    high=this.sprites[i].x+this.sprites[i].width;
+                }
+
+            }
+
+            this.width=Math.abs(low-high); 
+        
+        }else{
+
+            this.width=0;
         }
     }
 
@@ -139,8 +183,8 @@ class spriteBlock{
                 this.sprites[i].move(x,y);
             }
         }
-        this.x=x;
-        this.y=y;
+        this.x+=x;
+        this.y+=y;
     }
 
     setPosition(x,y){
