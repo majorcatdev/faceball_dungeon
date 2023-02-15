@@ -11,7 +11,7 @@ let global ={
 
 let Constants={
     fallSpeed:2,
-    startWidth:400,
+    startWidth:200,
     maxCircleSize:50,
 }
 
@@ -106,16 +106,16 @@ class Rectangle{
 
     update(){
         
-        if(this.x>=0){
+        if(this.x>0){
             if(65 in global.keysDown){
                 this.move(-5,0);
-                console.log("a is pressed");
+               
             }
         }
         if(this.x+this.width<512){
             if(68 in global.keysDown){
                 this.move(5,0);
-                console.log("d is pressed");
+               
             }
         }
 
@@ -201,6 +201,12 @@ let Game ={
         this.context.clearRect(0,0, this.canvas.width, this.canvas.height);
        
     },
+    
+    addText:function(string, x, y, size, color){
+        this.context.font = size+"px Arial";
+        this.context.fillStyle= color;
+        return this.context.fillText(string, x, y);
+    },
 
 
 
@@ -228,14 +234,14 @@ let requestAnimFrame = (function(){
         }
 })()
 
-addEventListener("keyDown",function(e){
+addEventListener("keydown",function(e){
     global.keysDown[e.keyCode]=true;
 
-},false)
-addEventListener("keyUp",function(e){
+},false);
+addEventListener("keyup",function(e){
     delete global.keysDown[e.keyCode];
 
-},false)
+},false);
 
 
 
@@ -305,6 +311,6 @@ function update(){
         
         global.spawnCounter=0;
     }
+    Game.addText("score:"+global.score, 0, 25, 32,'rgb(0,0,0)');
 }
 
-//make ball falling collecting game
