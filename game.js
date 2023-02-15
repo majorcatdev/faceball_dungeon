@@ -17,10 +17,13 @@ function randint(min, max) {
     return Math.floor(Math.random() * (max - min+1) + min);
 }
 
+/*
 class logicBlock{
-    constructor()
-}
+    constructor(){
 
+    }
+}
+*/
 class Circle{
    
     constructor(x,y, diamater, color){
