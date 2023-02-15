@@ -5,12 +5,12 @@ let global ={
     sprites: [],
     pool: [],
     score:0,
-
+    invaders:0,
 }
 
 
 let Constants={
-
+    maxInvaders:10,
 }
 
 function randint(min, max) {
@@ -32,10 +32,11 @@ class Circle{
         this.diamater=diamater;
         this.width=diamater;
         this.color = color;
-        this.draw=true;
+        this.drawSprite=true;
+        
     }
     draw(){
-        if(this.draw){
+        if(this.drawSprite){
             Game.context.beginPath();
             Game.context.arc(this.x,this.y,this.diamater/2,0,2*Math.PI);
             Game.context.fillStyle = this.color;
@@ -61,6 +62,9 @@ class Circle{
   
     }
 
+    drawToggle(toggle){
+        this.draw=toggle;
+    }
     update(){
         this.draw();
         
@@ -75,10 +79,10 @@ class Rectangle{
         this.width=width;
         this.height=height;
         this.color = color;
-        this.draw=true;
+        this.drawSprite=true;
     }
     draw(){
-        if(this.draw){
+        if(this.drawSprite){
             Game.context.beginPath();
             Game.context.fillStyle = this.color;
             Game.context.fillRect(this.x,this.y,this.width,this.height);
@@ -95,7 +99,9 @@ class Rectangle{
         this.y=y;
     }
 
-
+    drawToggle(toggle){
+        this.drawSprite=toggle;
+    }
 
     selfDestruct(){
         try {
@@ -127,12 +133,14 @@ class Rectangle{
 class spriteBlock{
     
    
-    constructor(x,y, height, sprites){
+    constructor(x,y, height, sprites, direction){
         this.x=x;
         this.y=y;
         this.height=height;
         this.sprites=sprites;
         this.width=0;
+        this.drawSprite=true;
+        this.direction=direction;
         if(this.sprites.length > 0){
             let low=this.sprites[0].x;
             let high=this.sprites[0].x+this.sprites[0].width;
@@ -154,7 +162,18 @@ class spriteBlock{
         }
     }
 
-    updateWidth(){
+
+    drawToggle(toggle){
+        this.drawSprite=toggle;
+        if(this.sprites.length > 0){
+            
+            for(let i=1; i<this.sprites.length; i++){
+                this.sprites[i].drawToggle(this.drawSprite);
+            }
+        }
+
+    }
+    updateSize(){
         if(this.sprites.length > 0){
             let low=this.sprites[0].x;
             let high=this.sprites[0].x+this.sprites[0].width;
@@ -170,7 +189,7 @@ class spriteBlock{
                 }
 
             }
-
+            this.x=low;
             this.width=Math.abs(low-high); 
         
         }else{
@@ -222,7 +241,9 @@ class spriteBlock{
             for(let i=1; i<this.sprites.length; i++){
                 this.sprites[i].update();
             }
+
         }
+        
     }
 }
 
@@ -248,10 +269,22 @@ function circleMaker(){
     
 }
 */
+function makeInvaderBlock(number, x, y, spriteWidth, spriteHight,spriteOffset, spriteColor, direction){
+    let block=[];
+    let offset=spriteOffset+x;
+    for(let i=0; i<number; i++){
+        let sprite=new Rectangle(offset,y,spriteWidth,spriteHight,spriteColor);
+        block.push(sprite);
+        global.sprites.push(sprite);
+        offset=offset+spriteWidth+spriteOffset;
+    }
+    global.pool.push(new spriteBlock(x,y,spriteHight,block,direction));
+}
 
 function startGame(){
     Game.start();
     setupy();
+    makeInvaderBlock(4,0,0,40,40,10,'rgb(0,0,0)',true);
    
 }
 
@@ -374,7 +407,55 @@ function updateSprites(){
 
 
 function invaderUpdate(){
+    if(global.pool.length>0){
+        let width=global.pool[0].width;
+        let x=global.pool[0].x;
+        for(let i=0; i<global.pool.length; i++){
+            if(global.pool[i].width>width){
+                width=global.pool[i].width;
+                
+            }
+            if(global.pool[i].x<x){
+                x=global.pool[i].x;
+            }
+        }
+        if(x+width>=512){
 
+            for(let i=0; i<global.pool.length; i++){
+                global.pool[i].move(0,50);
+                global.pool[i].direction=false;
+            }
+            if(global.invaders<Constants.maxInvaders){
+                makeInvaderBlock(4,x,0,40,40,10,'rgb(0,0,0)',false);
+            }
+        }else if(x<=0){
+
+            for(let i=0; i<global.pool.length; i++){
+                global.pool[i].move(0,50);
+                global.pool[i].direction=true;
+            }
+            if(global.invaders<Constants.maxInvaders){
+                makeInvaderBlock(4,x,0,40,40,10,'rgb(0,0,0)',true);
+            }
+        }else{
+            if(global.pool[0].direction==true){
+                for(let i=0; i<global.pool.length; i++){
+                    global.pool[i].move(40,0);
+                }
+            }else{
+                for(let i=0; i<global.pool.length; i++){
+                    global.pool[i].move(-40,0);
+                }
+            }
+        }
+        for(let i=0; i<global.pool.length; i++){
+            if(global.pool[i].y>=472){
+                global.pool[i].setPosition(global.pool[i].x,0);
+            }
+        }
+
+    }
+    
 }
 
 
@@ -390,10 +471,10 @@ function invaderUpdate(){
 //impliment sprite block space invaders movement
 
 
-let player=new Rectangle(0,512-40,Constants.startWidth, 40, 'rgb(0,0,0)');
-global.sprites.push(player);
+
+
 function update(){
     updateSprites();
-
+    invaderUpdate();
 }
 
