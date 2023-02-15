@@ -155,21 +155,7 @@ class spriteBlock{
     }
 
     setPosition(x,y){
-        let xOffset=0;
-        let yOffset=0;
-        if(x<this.x){
-            xOffset=x-this.x;
-        }else if(x>this.x){
-            xOffset=this.x-x;
-        }
-        if(y<this.y){
-            yOffset=y-this.y;
-        }else if(y>this.y){
-            yOffset=this.y-y;
-        }
-        this.move(xOffset,yOffset);
-
-
+        this.move((x-this.x),(y-this.y));
     }
 
     selfDestruct(){
