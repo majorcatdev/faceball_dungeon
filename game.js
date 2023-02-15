@@ -60,12 +60,7 @@ class Circle{
     }
     update(){
         this.draw();
-        if(this.y>=(Game.canvas.height-(this.diamater/2))){
-            this.selfDestruct();
-
-        }else{
-            this.move(0,this.fallSpeed);
-        }
+        
     }
 }
 
@@ -105,24 +100,24 @@ class Rectangle{
     }
 
     update(){
-        
-        if(this.x>0){
-            if(65 in global.keysDown){
-                this.move(-5,0);
-               
-            }
-        }
-        if(this.x+this.width<512){
-            if(68 in global.keysDown){
-                this.move(5,0);
-               
-            }
-        }
+            /*
 
+            if(65 in global.keysDown){
+            
+               
+            }
+        
+      
+            if(68 in global.keysDown){
+            
+               
+            }
+            */
         this.draw();
     }
 }
 
+/*
 function circleMaker(){
     
     const width=randint(10,Constants.maxCircleSize);
@@ -143,6 +138,7 @@ function circleMaker(){
     global.pool.push(circle);
     
 }
+*/
 
 function startGame(){
     Game.start();
@@ -270,21 +266,7 @@ function updateSprites(){
 
 
 
-function gameLogic(){
-    if(global.pool.length > 0){
-        for(let i=0; i<global.pool.length; i++){
-            if(differentColiderCollision(player,global.pool[i])){
-                global.score++;
-                global.pool[i].selfDestruct();
-                console.log("score:"+global.score);
-                if(player.width>10){
-                    player.width--;
-                    player.move(1,0);
-                }
-            }
-        }
-    }
-}
+
 
 
 
@@ -300,17 +282,6 @@ let player=new Rectangle(0,512-40,Constants.startWidth, 40, 'rgb(0,0,0)');
 global.sprites.push(player);
 function update(){
     updateSprites();
-    gameLogic();
-    global.spawnCounter++;
-    if(global.spawnCounter>=10){
-        
-        if(randint(0,1)==1){
-            circleMaker();
-        }
-        
-        
-        global.spawnCounter=0;
-    }
-    Game.addText("score:"+global.score, 0, 25, 32,'rgb(0,0,0)');
+
 }
 
