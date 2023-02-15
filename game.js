@@ -5,14 +5,12 @@ let global ={
     sprites: [],
     pool: [],
     score:0,
-    spawnCounter:0,
+
 }
 
 
 let Constants={
-    fallSpeed:2,
-    startWidth:200,
-    maxCircleSize:50,
+
 }
 
 function randint(min, max) {
@@ -52,13 +50,9 @@ class Circle{
         } catch (error) {
             return (false,"spritelist error");
         }
-        try {
-            global.pool.splice(global.pool.indexOf(this),1);
-        } catch (error) {
-            return (false,"pool error");
-        }
-        
+  
     }
+
     update(){
         this.draw();
         
@@ -91,7 +85,7 @@ class Rectangle{
 
 
 
-    removeFromSprites(){
+    selfDestruct(){
         try {
             global.sprites.splice(global.sprites.indexOf(this),1);
         } catch (error) {
@@ -137,7 +131,7 @@ class spriteBlock{
     updateWidth(){
 
         if(this.sprites.length > 0){
-            this.width=this.sprites[0].x-this.sprites[this.sprites.length-1].x;
+            this.width=Math.abs(this.sprites[0].x-this.sprites[this.sprites.length-1].x);
             
             
         }
