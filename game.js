@@ -282,6 +282,8 @@ function makeInvaderBlock(number, x, y, spriteWidth, spriteHight,spriteOffset, s
     global.pool.push(new spriteBlock(x,y,spriteHight,block,direction));
 }
 
+
+
 function startGame(){
     Game.start();
     setupy();
@@ -420,7 +422,7 @@ function invaderUpdate(){
                 x=global.pool[i].x;
             }
         }
-        if(x+width>=512){
+        if(512<=x+width){
 
             for(let i=0; i<global.pool.length; i++){
                 global.pool[i].move(0,14);
@@ -476,10 +478,10 @@ function invaderUpdate(){
 
 function update(){
     updateSprites();
-    if(global.updateClock>=20){
+    if(global.updateClock>=60){
         invaderUpdate();
     }
-    
+
     global.updateClock++;
 }
 
