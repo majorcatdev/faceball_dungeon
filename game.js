@@ -6,6 +6,7 @@ let global ={
     pool: [],
     score:0,
     invaders:0,
+    updateClock:0,
 }
 
 
@@ -284,7 +285,7 @@ function makeInvaderBlock(number, x, y, spriteWidth, spriteHight,spriteOffset, s
 function startGame(){
     Game.start();
     setupy();
-    makeInvaderBlock(4,0,0,40,40,10,'rgb(0,0,0)',true);
+    makeInvaderBlock(4,0,0,10,10,4,'rgb(0,0,0)',true);
    
 }
 
@@ -422,29 +423,29 @@ function invaderUpdate(){
         if(x+width>=512){
 
             for(let i=0; i<global.pool.length; i++){
-                global.pool[i].move(0,50);
+                global.pool[i].move(0,14);
                 global.pool[i].direction=false;
             }
             if(global.invaders<Constants.maxInvaders){
-                makeInvaderBlock(4,x,0,40,40,10,'rgb(0,0,0)',false);
+                makeInvaderBlock(4,x,0,10,10,4,'rgb(0,0,0)',false);
             }
         }else if(x<=0){
 
             for(let i=0; i<global.pool.length; i++){
-                global.pool[i].move(0,50);
+                global.pool[i].move(0,14);
                 global.pool[i].direction=true;
             }
             if(global.invaders<Constants.maxInvaders){
-                makeInvaderBlock(4,x,0,40,40,10,'rgb(0,0,0)',true);
+                makeInvaderBlock(4,x,0,10,10,4,'rgb(0,0,0)',true);
             }
         }else{
             if(global.pool[0].direction==true){
                 for(let i=0; i<global.pool.length; i++){
-                    global.pool[i].move(40,0);
+                    global.pool[i].move(10,0);
                 }
             }else{
                 for(let i=0; i<global.pool.length; i++){
-                    global.pool[i].move(-40,0);
+                    global.pool[i].move(-10,0);
                 }
             }
         }
@@ -475,6 +476,10 @@ function invaderUpdate(){
 
 function update(){
     updateSprites();
-    invaderUpdate();
+    if(global.updateClock>=20){
+        invaderUpdate();
+    }
+    
+    global.updateClock++;
 }
 
