@@ -6,12 +6,12 @@ let global ={
     pool: [],
     score:0,
     updateClock:0,
-    layers:{},
+    direction:true,
 }
 
 
 let Constants={
-    maxSlice:45,
+    invadersPerSlice:20,
 }
 
 function randint(min, max) {
@@ -299,61 +299,101 @@ function updateSprites(){
 class Invader extends Rectangle{
     constructor(x,y){
         super(x,y,10,10,'black');
-        this.direction=this.width+4;
+        
     }
     
 }
 
 
-function makeSlice(invaderCount, startX,startY, sliceName){
+function makeSlice(invaderCount, startX,startY){
     let slice=[];
-    let width=4;
     let x=startX;
     for(let i=0; i<invaderCount; i++){
         let invader=new Invader(startX,startY);
         global.sprites.push(invader);
         slice.push(invader);
         startX+=14;
-        width+=14;
+        
     }
-    global.layers[sliceName]=(slice,width);
+    global.pool.push(slice);
 }
 
 
 
 function sliceLogic(){
-    let masterWidth=0;
-    let keys=Object.keys(global.layers);
-    let masterX=global.layers[keys[0]][2];
-    for(let i=0; i<keys.length; i++){
-        if(global.layers[keys[i]][1]>masterWidth){
-            masterWidth=global.layers[keys[i]][1]; 
-        }
-        if(global.layers[keys[i]][2]<masterX){
-            masterX=global.layers[keys[i]][2];
-        }
-        
-    }
-    if(){
-        for(let i=0; i<keys.length; i++){
-            for(let j=0; j<global.layers[keys[i]][0].length; j++){
-                global.layers[keys[i]][0][j].move(0,14);
-                global.layers[keys[i]][0][j].direction=
+    let left=global.pool[0][0].x;
+    let right=global.pool[0][0].x+global.pool[0][0].width;
+    let makeRow=false;
+    for(let d=0; d<global.pool.length; d++){
+        for(let l=0; l<global.pool[d].length; l++){
+            if(global.pool[d][l].x<left){
+                left=global.pool[d][l].x;
+            }
+            if(global.pool[d][l].x+global.pool[d][l].width>right){
+                right=global.pool[d][l].x+global.pool[d][l].width;
             }
         }
     }
-    
-    for(let i=0; i<keys.length; i++){
-        for(let j=0; j<global.layers[keys[i]].length; j++){
-            global.layers[keys[i]][j].move(global.layers[keys[i]][j].direction,0);
+    if(right>512){
+        global.direction=false;
+        makeRow=true;
+        for(let d=0; d<global.pool.length; d++){
+            for(let l=0; l<global.pool[d].length; l++){
+                global.pool[d][l].move(0,14);
+            }
         }
-        global.layers[keys[i]][2]=masterX;
+    }else if(left<0){
+        global.direction=true;
+        makeRow=true;
+        for(let d=0; d<global.pool.length; d++){
+            for(let l=0; l<global.pool[d].length; l++){
+                global.pool[d][l].move(0,14);
+                
+            }
+        }
+
+    }
+    if(makeRow==true){
+        
+        for(let i=0; i<global.pool.length; i++){
+            if(global.pool[i][0].y<0){
+                makeRow=false;
+            }
+        }
+        if(makeRow==true){
+            makeSlice(Constants.invadersPerSlice,left,0);
+        }
     }
     
-    
+    for(let i=0; i<global.pool.length; i++){
+        if(global.pool[i][0].y<0){
+            for(let t=0; t<global.pool[i].length; t++){
+                global.pool[i][t].setPosition(global.pool[i][t].x,0);
+            }
+        
+        }
+    }
+
+    if(global.direction==true){
+        for(let d=0; d<global.pool.length; d++){
+            for(let l=0; l<global.pool[d].length; l++){
+                global.pool[d][l].move(14,0);
+            }
+        }
+    }
+    if(global.direction==false){
+        for(let d=0; d<global.pool.length; d++){
+            for(let l=0; l<global.pool[d].length; l++){
+                global.pool[d][l].move(-14,0);
+            }
+        }
+    }
+
 
 }
-makeSlice(10,0,0,"axolittle"); 
+
+
+makeSlice(Constants.invadersPerSlice,0,0); 
 
 sliceLogic();
 
@@ -363,7 +403,7 @@ function update(){
     //draw rect here
    
     
-    if(global.updateClock>=20){
+    if(global.updateClock>=10){
         global.updateClock=0;
         sliceLogic();
         
