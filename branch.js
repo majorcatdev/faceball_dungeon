@@ -316,7 +316,7 @@ function makeSlice(invaderCount, startX,startY, sliceName){
         startX+=14;
         width+=14;
     }
-    global.layers[sliceName]=(slice,width,x);
+    global.layers[sliceName]=(slice,width);
 }
 
 
@@ -342,11 +342,14 @@ function sliceLogic(){
             }
         }
     }
+    
     for(let i=0; i<keys.length; i++){
         for(let j=0; j<global.layers[keys[i]].length; j++){
             global.layers[keys[i]][j].move(global.layers[keys[i]][j].direction,0);
         }
+        global.layers[keys[i]][2]=masterX;
     }
+    
     
 
 }
