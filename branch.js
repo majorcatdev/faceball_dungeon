@@ -7,6 +7,8 @@ let global ={
     score:0,
     updateClock:0,
     direction:true,
+    playing:true,
+    
 }
 
 
@@ -298,6 +300,69 @@ class Invader extends Rectangle{
     
 }
 
+class Projectile extends Circle{
+    constructor(x,y){
+        super(x,y,10,'red');
+        this.drawSprite=false;
+        global.sprites.push(this);
+        
+        
+
+    }
+    update(){
+        
+        
+        if(this.drawSprite){
+            this.draw();
+            if(this.y<=0){
+                this.drawSprite=false;
+            }else{
+                this.move(0,-2);
+            }
+            for(let d=0; d<global.pool.length; d++){
+                for(let l=0; l<global.pool[d].length; l++){
+                    if(global.pool[d][l].drawSprite==true){
+                        if(differentColiderCollision(global.pool[d][l],this)){
+                            this.drawSprite=false;
+                            global.pool[d][l].drawSprite=false;
+                            global.score++;
+                        }
+                    }
+                    
+                }
+            }
+            
+        }
+
+    }
+}
+class Player extends Rectangle{
+    constructor(x,y){
+        super(x,y,10,10,'blue');
+        global.sprites.push(this);
+        this.bullet=new Projectile(this.x,this.y);
+    }
+    update(){
+        
+        this.draw();
+        if(65 in global.keysDown&&this.x>0){
+            this.move(-2,0);
+        }
+        else if(68 in global.keysDown&&this.x+this.width<512){
+            this.move(2,0);
+        }
+        if(this.bullet.drawSprite==false){
+            this.bullet.setPosition(this.x,this.y);
+            if(32 in global.keysDown){
+                this.bullet.drawSprite=true;
+                
+            }
+            
+        }
+        
+    }
+}
+
 
 function makeSlice(invaderCount, startX,startY){
     let slice=[];
@@ -363,6 +428,7 @@ function sliceLogic(){
         if(global.pool[i][0].y<0){
             for(let t=0; t<global.pool[i].length; t++){
                 global.pool[i][t].setPosition(global.pool[i][t].x,0);
+                global.pool[i][t].drawSprite=true;
             }
         
         }
@@ -391,19 +457,22 @@ makeSlice(Constants.invadersPerSlice,0,0);
 
 sliceLogic();
 
+player=new Player(0,502);
+
 function update(){
     
     updateSprites();
     //draw rect here
    
-    
-    if(global.updateClock>=10){
-        global.updateClock=0;
-        sliceLogic();
-        
-        
+    if(global.playing==true){
+        if(global.updateClock>=10){
+            global.updateClock=0;
+            sliceLogic();
+            
+            
+        }
+        global.updateClock++;    
     }
-    global.updateClock++;
 
 
 
