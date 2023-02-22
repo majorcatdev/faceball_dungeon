@@ -327,18 +327,23 @@ class Tile {
       switch(direction){
         case 2: //down
           this.frameX = 0;
+          this.frameY = 0;
           break;
         case 4: //up
           this.frameX = 1;
+          this.frameY = 0;
           break;
         case 1: //right
-          this.frameX = 2;
+          this.frameX = 0;
+          this.frameY = 1;
           break;
         case 3:
-          this.frameX = 3;
+          this.frameX = 1;
+          this.frameY = 1;
           break;
         default:
           this.frameX = 0;
+          this.frameY = 0;
           break;
              }
       
@@ -372,9 +377,23 @@ class Tile {
 class Invader extends Rectangle{
     constructor(x,y){
         super(x,y,20,20,'black');
-        this.id='sprites/enemy_placeholder.png'
+        this.spriteID='sprites/enemy_placeholder.png'
+        this.sprite=new Tile(this.x,this.y,this.spriteID);
 
         
+    }
+    move(x,y){
+        this.x+=x;
+        this.y+=y;
+        this.sprite.setPosition(this.x,this.y);
+    }
+    setPosition(x,y){
+        this.x=x;
+        this.y=y;
+        this.sprite.setPosition(this.x,this.y);
+    }
+    draw(){
+        this.sprite.draw();
     }
     
 }
@@ -384,9 +403,23 @@ class Projectile extends Circle{
         super(x,y,15,'red');
         this.drawSprite=false;
         global.sprites.push(this);
-        
+        this.spriteID='sprites/player_bullet.png'
+        this.sprite=new Tile(this.x,this.y,this.spriteID);
         
 
+    }
+    move(x,y){
+        this.x+=x;
+        this.y+=y;
+        this.sprite.setPosition(this.x,this.y);
+    }
+    setPosition(x,y){
+        this.x=x;
+        this.y=y;
+        this.sprite.setPosition(this.x,this.y);
+    }
+    draw(){
+        this.sprite.draw();
     }
     update(){
         
