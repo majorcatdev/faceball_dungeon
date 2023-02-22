@@ -20,34 +20,116 @@ function randint(min, max) {
     return Math.floor(Math.random() * (max - min+1) + min);
 }
 
-
-class Circle{
-   
-    constructor(x,y, diamater, color){
-        this.x=x;
-        this.y=y;
-        this.diamater=diamater;
-        this.width=diamater;
-        this.color = color;
-        this.drawSprite=true;
-        
+class Tile {
+    constructor(x,y,id = null){
+      this.x = x;
+      this.y = y;
+      this.size = 64;
+      this.id = id;
+      this.frameX = 0;
+      this.frameY = 0;
+      this.delay = 0;
+      this.moveTicker = 0;
+      this.image = document.getElementById(id);
     }
+    
     draw(){
-        if(this.drawSprite){
-            Game.context.beginPath();
-            Game.context.arc(this.x,this.y,this.diamater/2,0,2*Math.PI);
-            Game.context.fillStyle = this.color;
-            Game.context.fill();
-            Game.context.stroke();
-        }
-    }
-    move(x,y){
-        this.x+=x;
-        this.y+=y;
+      if(this.id){
+      Game.context.drawImage(this.image, this.x*this.size, this.y*this.size, this.size, this.size);
+      }else{
+        Game.context.fillStyle = "rgba(255, 0, 0, 0.3)";
+        Game.context.fillRect(this.x*this.size, this.y*this.size, this.size,this.size) 
+      }
     }
     setPosition(x,y){
         this.x=x;
         this.y=y;
+    }
+    drawSelect(){
+      if(this.id){
+        Game.context.drawImage(this.image,(this.size)*this.frameX, (this.size)*this.frameY, this.size, this.size,this.x*this.size,this.y*this.size, this.size, this.size);
+    }
+      
+    }
+    
+     animateDraw(){
+        Game.context.drawImage(this.image,(this.size)*this.frameX, (this.size)*this.frameY, this.size, this.size,this.x*this.size,this.y*this.size, this.size, this.size);
+        this.incrementFrame(1,10);
+      }
+    
+    directionDraw(direction){
+      switch(direction){
+        case 2: //down
+          this.frameX = 0;
+          this.frameY = 0;
+          break;
+        case 4: //up
+          this.frameX = 1;
+          this.frameY = 0;
+          break;
+        case 1: //right
+          this.frameX = 0;
+          this.frameY = 1;
+          break;
+        case 3:
+          this.frameX = 1;
+          this.frameY = 1;
+          break;
+        default:
+          this.frameX = 0;
+          this.frameY = 0;
+          break;
+             }
+      
+      
+             Game.context.drawImage(this.image,(this.size)*this.frameX, (this.size)*this.frameY, this.size, this.size,this.x*this.size,this.y*this.size, this.size, this.size);
+      
+      
+    } 
+      
+    incrementFrame(numFrames, delayAmount) {
+      if (this.delay < delayAmount) {
+        this.delay += 1;
+      } else {
+        if (this.frameX < numFrames ) {
+          this.frameX += 1;
+        } else {
+          this.frameX = 0;
+          this.delay = 0; 
+        }
+      }
+    } 
+    
+    
+    
+  }
+
+class Circle{
+   
+    constructor(x,y, diamater, spriteID){
+        this.x=x;
+        this.y=y;
+        this.diamater=diamater;
+        this.width=diamater;
+        this.spriteID = spriteID;
+        this.drawSprite=true;
+        this.sprite=new Tile(this.x,this.y,this.spriteID);
+        
+    }
+    move(x,y){
+        this.x+=x;
+        this.y+=y;
+        this.sprite.setPosition(this.x,this.y);
+    }
+    setPosition(x,y){
+        this.x=x;
+        this.y=y;
+        this.sprite.setPosition(this.x,this.y);
+    }
+    draw(){
+        if(this.drawSprite==true){
+            this.sprite.draw();
+        }
     }
 
     selfDestruct(){
@@ -70,33 +152,32 @@ class Circle{
 
 class Rectangle{
    
-    constructor(x,y, width, height, color){
+    constructor(x,y, width, height, spriteID){
         this.x=x;
         this.y=y;
         this.width=width;
         this.height=height;
-        this.color = color;
+        this.spriteID = spriteID;
         this.drawSprite=true;
-    }
-    draw(){
-        if(this.drawSprite){
-
-
-            Game.context.beginPath();
-            Game.context.fillStyle = this.color;
-            Game.context.fillRect(this.x,this.y,this.width,this.height);
-            Game.context.stroke();
-        }
-        
+        this.sprite=new Tile(this.x,this.y,this.spriteID);
     }
     move(x,y){
         this.x+=x;
         this.y+=y;
+        this.sprite.setPosition(this.x,this.y);
     }
     setPosition(x,y){
         this.x=x;
         this.y=y;
+        this.sprite.setPosition(this.x,this.y);
     }
+    draw(){
+        if(this.drawSprite==true){
+            this.sprite.draw();
+        }
+    }
+    
+
 
     drawToggle(toggle){
         this.drawSprite=toggle;
@@ -286,89 +367,7 @@ function updateSprites(){
 
 
 
-class Tile {
-    constructor(x,y,id = null){
-      this.x = x;
-      this.y = y;
-      this.size = 64;
-      this.id = id;
-      this.frameX = 0;
-      this.frameY = 0;
-      this.delay = 0;
-      this.moveTicker = 0;
-      this.image = document.getElementById(id);
-    }
-    
-    draw(){
-      if(this.id){
-      ctx.drawImage(this.image, this.x*this.size, this.y*this.size, this.size, this.size);
-      }else{
-        ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
-        ctx.fillRect(this.x*this.size, this.y*this.size, this.size,this.size) 
-      }
-    }
-    setPosition(x,y){
-        this.x=x;
-        this.y=y;
-    }
-    drawSelect(){
-      if(this.id){
-        ctx.drawImage(this.image,(this.size)*this.frameX, (this.size)*this.frameY, this.size, this.size,this.x*this.size,this.y*this.size, this.size, this.size);
-    }
-      
-    }
-    
-     animateDraw(){
-        ctx.drawImage(this.image,(this.size)*this.frameX, (this.size)*this.frameY, this.size, this.size,this.x*this.size,this.y*this.size, this.size, this.size);
-        this.incrementFrame(1,10);
-      }
-    
-    directionDraw(direction){
-      switch(direction){
-        case 2: //down
-          this.frameX = 0;
-          this.frameY = 0;
-          break;
-        case 4: //up
-          this.frameX = 1;
-          this.frameY = 0;
-          break;
-        case 1: //right
-          this.frameX = 0;
-          this.frameY = 1;
-          break;
-        case 3:
-          this.frameX = 1;
-          this.frameY = 1;
-          break;
-        default:
-          this.frameX = 0;
-          this.frameY = 0;
-          break;
-             }
-      
-      
-      ctx.drawImage(this.image,(this.size)*this.frameX, (this.size)*this.frameY, this.size, this.size,this.x*this.size,this.y*this.size, this.size, this.size);
-      
-      
-    } 
-      
-    incrementFrame(numFrames, delayAmount) {
-      if (this.delay < delayAmount) {
-        this.delay += 1;
-      } else {
-        if (this.frameX < numFrames ) {
-          this.frameX += 1;
-        } else {
-          this.frameX = 0;
-          this.delay = 0; 
-        }
-      }
-    } 
-    
-    
-    
-  }
+
 
 // if 32 in global.keysDown do something
 
@@ -382,44 +381,18 @@ class Invader extends Rectangle{
 
         
     }
-    move(x,y){
-        this.x+=x;
-        this.y+=y;
-        this.sprite.setPosition(this.x,this.y);
-    }
-    setPosition(x,y){
-        this.x=x;
-        this.y=y;
-        this.sprite.setPosition(this.x,this.y);
-    }
-    draw(){
-        this.sprite.draw();
-    }
+    
     
 }
 
 class Projectile extends Circle{
     constructor(x,y){
-        super(x,y,15,'red');
+        super(x,y,15,'sprites/red_bullet.png');
         this.drawSprite=false;
         global.sprites.push(this);
-        this.spriteID='sprites/player_bullet.png'
-        this.sprite=new Tile(this.x,this.y,this.spriteID);
+        
         
 
-    }
-    move(x,y){
-        this.x+=x;
-        this.y+=y;
-        this.sprite.setPosition(this.x,this.y);
-    }
-    setPosition(x,y){
-        this.x=x;
-        this.y=y;
-        this.sprite.setPosition(this.x,this.y);
-    }
-    draw(){
-        this.sprite.draw();
     }
     update(){
         
@@ -450,7 +423,7 @@ class Projectile extends Circle{
 }
 class Player extends Rectangle{
     constructor(x,y){
-        super(x,y,20,20,'blue');
+        super(x,y,20,20,'sprites/player_placeholder.png');
         global.sprites.push(this);
         this.bullet=new Projectile(this.x,this.y);
     }
