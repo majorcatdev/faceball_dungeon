@@ -302,7 +302,7 @@ class Invader extends Rectangle{
 
 class Projectile extends Circle{
     constructor(x,y){
-        super(x,y,10,'red');
+        super(x,y,15,'red');
         this.drawSprite=false;
         global.sprites.push(this);
         
@@ -317,7 +317,7 @@ class Projectile extends Circle{
             if(this.y<=0){
                 this.drawSprite=false;
             }else{
-                this.move(0,-10);
+                this.move(0,-20);
             }
             for(let d=0; d<global.pool.length; d++){
                 for(let l=0; l<global.pool[d].length; l++){
@@ -477,7 +477,7 @@ function update(){
     //draw rect here
     Game.addText("score:"+global.score, 0, 25, 32,'rgb(0,200,0)');
     if(global.playing==true){
-        if(global.updateClock>=25){
+        if(global.updateClock>=45){
             global.updateClock=0;
             sliceLogic();
             
