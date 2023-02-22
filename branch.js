@@ -317,7 +317,7 @@ class Projectile extends Circle{
             if(this.y<=0){
                 this.drawSprite=false;
             }else{
-                this.move(0,-5);
+                this.move(0,-10);
             }
             for(let d=0; d<global.pool.length; d++){
                 for(let l=0; l<global.pool[d].length; l++){
@@ -338,7 +338,7 @@ class Projectile extends Circle{
 }
 class Player extends Rectangle{
     constructor(x,y){
-        super(x,y,10,10,'blue');
+        super(x,y,20,20,'blue');
         global.sprites.push(this);
         this.bullet=new Projectile(this.x,this.y);
     }
@@ -468,7 +468,7 @@ makeSlice(Constants.invadersPerSlice,0,0);
 
 sliceLogic();
 
-player=new Player(0,502);
+player=new Player(0,492);
 
 function update(){
     
@@ -476,7 +476,7 @@ function update(){
     //draw rect here
    
     if(global.playing==true){
-        if(global.updateClock>=20){
+        if(global.updateClock>=25){
             global.updateClock=0;
             sliceLogic();
             
