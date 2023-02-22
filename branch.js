@@ -463,6 +463,7 @@ function sliceLogic(){
 
 }
 
+//comment
 
 makeSlice(Constants.invadersPerSlice,0,0); 
 
@@ -474,7 +475,7 @@ function update(){
     
     updateSprites();
     //draw rect here
-   
+    Game.addText("score:"+global.score, 0, 25, 32,'rgb(0,200,0)');
     if(global.playing==true){
         if(global.updateClock>=25){
             global.updateClock=0;
