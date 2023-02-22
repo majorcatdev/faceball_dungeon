@@ -292,7 +292,7 @@ class Tile {
       this.y = y;
       this.size = 64;
       this.id = id;
-      this.frameX = 1;
+      this.frameX = 0;
       this.frameY = 0;
       this.delay = 0;
       this.moveTicker = 0;
@@ -307,7 +307,10 @@ class Tile {
         ctx.fillRect(this.x*this.size, this.y*this.size, this.size,this.size) 
       }
     }
-    
+    setPosition(x,y){
+        this.x=x;
+        this.y=y;
+    }
     drawSelect(){
       if(this.id){
         ctx.drawImage(this.image,(this.size)*this.frameX, (this.size)*this.frameY, this.size, this.size,this.x*this.size,this.y*this.size, this.size, this.size);
@@ -370,7 +373,7 @@ class Invader extends Rectangle{
     constructor(x,y){
         super(x,y,20,20,'black');
         this.id='sprites/enemy_placeholder.png'
-        
+
         
     }
     
