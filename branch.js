@@ -286,7 +286,81 @@ function updateSprites(){
 
 
 
-
+class Tile {
+    constructor(x,y,id = null){
+      this.x = x;
+      this.y = y;
+      this.size = 64;
+      this.id = id;
+      this.frameX = 1;
+      this.frameY = 0;
+      this.delay = 0;
+      this.moveTicker = 0;
+      this.image = document.getElementById(id);
+    }
+    
+    draw(){
+      if(this.id){
+      ctx.drawImage(this.image, this.x*this.size, this.y*this.size, this.size, this.size);
+      }else{
+        ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
+        ctx.fillRect(this.x*this.size, this.y*this.size, this.size,this.size) 
+      }
+    }
+    
+    drawSelect(){
+      if(this.id){
+        ctx.drawImage(this.image,(this.size)*this.frameX, (this.size)*this.frameY, this.size, this.size,this.x*this.size,this.y*this.size, this.size, this.size);
+    }
+      
+    }
+    
+     animateDraw(){
+        ctx.drawImage(this.image,(this.size)*this.frameX, (this.size)*this.frameY, this.size, this.size,this.x*this.size,this.y*this.size, this.size, this.size);
+        this.incrementFrame(1,10);
+      }
+    
+    directionDraw(direction){
+      switch(direction){
+        case 2: //down
+          this.frameX = 0;
+          break;
+        case 4: //up
+          this.frameX = 1;
+          break;
+        case 1: //right
+          this.frameX = 2;
+          break;
+        case 3:
+          this.frameX = 3;
+          break;
+        default:
+          this.frameX = 0;
+          break;
+             }
+      
+      
+      ctx.drawImage(this.image,(this.size)*this.frameX, (this.size)*this.frameY, this.size, this.size,this.x*this.size,this.y*this.size, this.size, this.size);
+      
+      
+    } 
+      
+    incrementFrame(numFrames, delayAmount) {
+      if (this.delay < delayAmount) {
+        this.delay += 1;
+      } else {
+        if (this.frameX < numFrames ) {
+          this.frameX += 1;
+        } else {
+          this.frameX = 0;
+          this.delay = 0; 
+        }
+      }
+    } 
+    
+    
+    
+  }
 
 // if 32 in global.keysDown do something
 
