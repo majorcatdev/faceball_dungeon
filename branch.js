@@ -547,10 +547,12 @@ player=new Player(0,492);
 
 function update(){
     
-    updateSprites();
+    
     //draw rect here
-    Game.addText("score:"+global.score, 0, 25, 32,'rgb(0,200,0)');
+    
     if(global.playing==true){
+        Game.addText("score:"+global.score, 0, 25, 32,'rgb(0,200,0)');
+        updateSprites();
         if(global.updateClock>=45){
             global.updateClock=0;
             sliceLogic();
@@ -558,6 +560,8 @@ function update(){
             
         }
         global.updateClock++;    
+    }else{
+        Game.addText("Game Over", 256, 80, 64,'rgb(0,200,0)');
     }
 
 
