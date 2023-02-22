@@ -369,6 +369,7 @@ class Tile {
 class Invader extends Rectangle{
     constructor(x,y){
         super(x,y,20,20,'black');
+        this.id='sprites/enemy_placeholder'
         
     }
     
