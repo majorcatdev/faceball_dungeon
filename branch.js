@@ -377,7 +377,7 @@ class Invader extends Rectangle{
     constructor(x,y){
         super(x,y,20,20,'black');
         this.spriteID='sprites/enemy_placeholder.png'
-        this.sprite=new Tile(this.x,this.y,this.spriteID);
+        
 
         
     }
@@ -390,6 +390,7 @@ class Projectile extends Circle{
         super(x,y,15,'sprites/red_bullet.png');
         this.drawSprite=false;
         global.sprites.push(this);
+        this.AB=false;
         
         
 
@@ -399,6 +400,13 @@ class Projectile extends Circle{
         
         if(this.drawSprite){
             this.draw();
+            if(this.AB==false){
+                this.sprite.frameY=1;
+                this.AB=true;
+            }else{
+                this.sprite.frameY=0;
+                this.AB=false;
+            }
             if(this.y<=0){
                 this.drawSprite=false;
             }else{
@@ -573,6 +581,7 @@ function update(){
         global.updateClock++;    
     }else{
         Game.addText("Game Over", 256, 80, 64,'rgb(0,200,0)');
+        Game.addText("score:"+global.score, 256, 200, 32,'rgb(0,200,0)');
     }
 
 
