@@ -21,7 +21,7 @@ function randint(min, max) {
 }
 
 class Tile {
-    constructor(x,y,id = null){
+    constructor(x,y,id){
       this.x = x;
       this.y = y;
       this.size = 64;
@@ -30,12 +30,17 @@ class Tile {
       this.frameY = 0;
       this.delay = 0;
       this.moveTicker = 0;
-      this.image = document.getElementById(id);
+      this.image = new Image();
+      console.log(id);
+      this.image.src=id;
     }
     
     draw(){
       if(this.id){
-      Game.context.drawImage(this.image, this.x*this.size, this.y*this.size, this.size, this.size);
+        console.log(this.x*this.size,this.y*this.size);
+    
+        Game.context.drawImage(this.image, this.x*this.size, this.y*this.size, this.size, this.size);
+        //Game.context.drawImage(this.image,this.x,this.y);
       }else{
         Game.context.fillStyle = "rgba(255, 0, 0, 0.3)";
         Game.context.fillRect(this.x*this.size, this.y*this.size, this.size,this.size) 
@@ -53,8 +58,8 @@ class Tile {
     }
     
      animateDraw(){
-        Game.context.drawImage(this.image,(this.size)*this.frameX, (this.size)*this.frameY, this.size, this.size,this.x*this.size,this.y*this.size, this.size, this.size);
-        this.incrementFrame(1,10);
+        Game.context.drawImage(this.image,(this.size)*this.frameX, (this.size)*this.frameY, this.size, this.size,this.x,this.y*2, this.size, this.size);
+        this.incrementFrame(1,4);
       }
     
     directionDraw(direction){
@@ -88,13 +93,14 @@ class Tile {
     } 
       
     incrementFrame(numFrames, delayAmount) {
+        
       if (this.delay < delayAmount) {
         this.delay += 1;
       } else {
-        if (this.frameX < numFrames ) {
-          this.frameX += 1;
+        if (this.frameY < numFrames ) {
+          this.frameY += 1;
         } else {
-          this.frameX = 0;
+          this.frameY = 0;
           this.delay = 0; 
         }
       }
@@ -113,7 +119,7 @@ class Circle{
         this.width=diamater;
         this.spriteID = spriteID;
         this.drawSprite=true;
-        this.sprite=new Tile(this.x,this.y,this.spriteID);
+        this.sprite=new Tile(this.x,this.y,spriteID);
         
     }
     move(x,y){
@@ -128,7 +134,7 @@ class Circle{
     }
     draw(){
         if(this.drawSprite==true){
-            this.sprite.draw();
+            this.sprite.animateDraw();
         }
     }
 
@@ -159,7 +165,7 @@ class Rectangle{
         this.height=height;
         this.spriteID = spriteID;
         this.drawSprite=true;
-        this.sprite=new Tile(this.x,this.y,this.spriteID);
+        this.sprite=new Tile(this.x,this.y,spriteID);
     }
     move(x,y){
         this.x+=x;
@@ -173,7 +179,7 @@ class Rectangle{
     }
     draw(){
         if(this.drawSprite==true){
-            this.sprite.draw();
+            this.sprite.animateDraw();
         }
     }
     
@@ -375,8 +381,8 @@ function updateSprites(){
 
 class Invader extends Rectangle{
     constructor(x,y){
-        super(x,y,20,20,'black');
-        this.spriteID='sprites/enemy_placeholder.png'
+        super(x,y,20,20,'sprites/enemy_placeholder2.png');
+       
         
 
         
