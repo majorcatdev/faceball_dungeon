@@ -19,7 +19,7 @@ let Constants={
 function randint(min, max) {
     return Math.floor(Math.random() * (max - min+1) + min);
 }
-
+//needs better naming
 class Tile {
     constructor(x,y,id){
       this.x = x;
