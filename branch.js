@@ -561,9 +561,9 @@ function sliceLogic(){
 
 makeStars(70);
 
-makeSlice(Constants.invadersPerSlice,0,0); 
+makeSlice(Constants.invadersPerSlice,126,0); 
 
-sliceLogic();
+
 
 player=new Player(0,492);
 
