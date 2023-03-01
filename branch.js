@@ -574,14 +574,15 @@ function update(){
     //draw rect here
     
     if(global.playing==true){
-        Game.addText("score:"+global.score, 0, 25, 32,'rgb(0,200,0)');
+       
         updateSprites();
-        if(global.updateClock>=45){
+        if(global.updateClock>=10){
             global.updateClock=0;
             sliceLogic();
             
             
         }
+        Game.addText("score:"+global.score, 0, 25, 32,'rgb(0,200,0)');
         global.updateClock++;    
     }else{
         Game.addText("Game Over", global.width/8, 80, 64,'rgb(0,200,0)');
