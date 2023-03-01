@@ -83,18 +83,18 @@ class Circle{
         this.width=diamater;
         this.spriteID = spriteID;
         this.drawSprite=true;
-        this.sprite=new Tile(this.x,this.y,this.width*2,this.spriteID,64,frameCount,2);
+        this.sprite=new Tile(this.x-this.width/2,this.y-this.width/2,this.width*2,this.spriteID,64,frameCount,2);
         
     }
     move(x,y){
         this.x+=x;
         this.y+=y;
-        this.sprite.setPosition(this.x,this.y);
+        this.sprite.setPosition(this.x-this.width/2,this.y-this.width/2);
     }
     setPosition(x,y){
         this.x=x;
         this.y=y;
-        this.sprite.setPosition(this.x,this.y);
+        this.sprite.setPosition(this.x-this.width/2,this.y-this.width/2);
     }
     draw(){
         if(this.drawSprite==true){
