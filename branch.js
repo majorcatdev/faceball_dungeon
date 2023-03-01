@@ -20,106 +20,63 @@ function randint(min, max) {
     return Math.floor(Math.random() * (max - min+1) + min);
 }
 //needs better naming
+
+//drawImage(image, frameX, frameY, frameWidth, frameHeight, x, y, width, height)
+
 class Tile {
-    constructor(x,y,id){
+    constructor(x,y, size, spriteSheetID, frameSize, totalFrames, frameChangeInterval){
       this.x = x;
       this.y = y;
-      this.size = 64;
-      this.id = id;
-      this.frameX = 0;
-      this.frameY = 0;
+      this.size = size;
+      this.id = spriteSheetID;
+      this.totalFrames=totalFrames;
+      this.frameCount=0;
+      this.frameSize = frameSize;
       this.delay = 0;
-      this.moveTicker = 0;
+      this.FPS = frameChangeInterval;
       this.image = new Image();
-      console.log(id);
-      this.image.src=id;
+      
+      this.image.src=this.id;
     }
     
+    //drawImage(image, frameX, frameY, frameWidth, frameHeight, x, y, width, height)
     draw(){
-      if(this.id){
-        console.log(this.x*this.size,this.y*this.size);
-    
-        Game.context.drawImage(this.image, this.x*this.size, this.y*this.size, this.size, this.size);
+        
+        
+        Game.context.drawImage(this.image, this.frameCount*this.frameSize, 0, this.frameSize, this.frameSize, this.x, this.y, this.size, this.size);
         //Game.context.drawImage(this.image,this.x,this.y);
-      }else{
-        Game.context.fillStyle = "rgba(255, 0, 0, 0.3)";
-        Game.context.fillRect(this.x*this.size, this.y*this.size, this.size,this.size) 
-      }
+    
     }
     setPosition(x,y){
         this.x=x;
         this.y=y;
     }
-    drawSelect(){
-      if(this.id){
-        Game.context.drawImage(this.image,(this.size)*this.frameX, (this.size)*this.frameY, this.size, this.size,this.x*this.size,this.y*this.size, this.size, this.size);
-    }
-      
-    }
-    
-     animateDraw(){
-        Game.context.drawImage(this.image,(this.size)*this.frameX, (this.size)*this.frameY, this.size, this.size,this.x,this.y*2, this.size, this.size);
-        this.incrementFrame(1,4);
-      }
-    
-    directionDraw(direction){
-      switch(direction){
-        case 2: //down
-          this.frameX = 0;
-          this.frameY = 0;
-          break;
-        case 4: //up
-          this.frameX = 1;
-          this.frameY = 0;
-          break;
-        case 1: //right
-          this.frameX = 0;
-          this.frameY = 1;
-          break;
-        case 3:
-          this.frameX = 1;
-          this.frameY = 1;
-          break;
-        default:
-          this.frameX = 0;
-          this.frameY = 0;
-          break;
-             }
-      
-      
-             Game.context.drawImage(this.image,(this.size)*this.frameX, (this.size)*this.frameY, this.size, this.size,this.x*this.size,this.y*this.size, this.size, this.size);
-      
-      
-    } 
-      
-    incrementFrame(numFrames, delayAmount) {
-        
-      if (this.delay < delayAmount) {
-        this.delay += 1;
-      } else {
-        if (this.frameY < numFrames ) {
-          this.frameY += 1;
-        } else {
-          this.frameY = 0;
-          this.delay = 0; 
+    animateDraw(){
+        this.delay++;
+        this.draw();
+        if(this.delay>=this.FPS){
+            this.delay=0;
+            this.frameCount++;
+            if(this.frameCount>this.totalFrames){
+                this.frameCount=0;
+            }
         }
-      }
-    } 
+    }
     
     
-    
-  }
+}
+
 
 class Circle{
    
-    constructor(x,y, diamater, spriteID){
+    constructor(x,y, diamater, spriteID,frameCount){
         this.x=x;
         this.y=y;
         this.diamater=diamater;
         this.width=diamater;
         this.spriteID = spriteID;
         this.drawSprite=true;
-        this.sprite=new Tile(this.x,this.y,spriteID);
+        this.sprite=new Tile(this.x,this.y,this.width*2,this.spriteID,64,frameCount,2);
         
     }
     move(x,y){
@@ -158,14 +115,15 @@ class Circle{
 
 class Rectangle{
    
-    constructor(x,y, width, height, spriteID){
+    constructor(x,y, width, height, spriteID,framecount){
         this.x=x;
         this.y=y;
         this.width=width;
         this.height=height;
         this.spriteID = spriteID;
         this.drawSprite=true;
-        this.sprite=new Tile(this.x,this.y,spriteID);
+        this.sprite=new Tile(this.x,this.y,this.width,this.spriteID,64,framecount,0);
+        this.sprite.FPS=45;
     }
     move(x,y){
         this.x+=x;
@@ -290,7 +248,7 @@ let Game ={
         this.canvas.width=512;
         this.canvas.height=512;
         this.context=this.canvas.getContext("2d");
-        this.canvas.style.cssText='border: 2px solid black;';
+        this.canvas.style.cssText='border: 2px solid white; background-color:black;'
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
         this.interval = setInterval(update(), 250);
         this.inGame=true;
@@ -298,9 +256,9 @@ let Game ={
    
 
     clear: function(){
-       
+        this.context.fillStyle='black';
         this.context.clearRect(0,0, this.canvas.width, this.canvas.height);
-       
+        
     },
     
     addText:function(string, x, y, size, color){
@@ -381,7 +339,9 @@ function updateSprites(){
 
 class Invader extends Rectangle{
     constructor(x,y){
-        super(x,y,20,20,'sprites/enemy_placeholder2.png');
+        //x,y, width, height, spriteID,framecount
+        super(x,y,20,20,'sprites/enemy_placeholder2.png',3);
+        this.sprite.frameCount=randint(0,3);
        
         
 
@@ -393,7 +353,8 @@ class Invader extends Rectangle{
 
 class Projectile extends Circle{
     constructor(x,y){
-        super(x,y,15,'sprites/red_bullet.png');
+        //x,y, diamater, spriteID,frameCount
+        super(x,y,20,'sprites/red_bullet.png',1);
         this.drawSprite=false;
         global.sprites.push(this);
         this.AB=false;
@@ -405,14 +366,8 @@ class Projectile extends Circle{
         
         
         if(this.drawSprite){
-            this.draw();
-            if(this.AB==false){
-                this.sprite.frameY=1;
-                this.AB=true;
-            }else{
-                this.sprite.frameY=0;
-                this.AB=false;
-            }
+            this.sprite.animateDraw();
+            
             if(this.y<=0){
                 this.drawSprite=false;
             }else{
@@ -437,7 +392,8 @@ class Projectile extends Circle{
 }
 class Player extends Rectangle{
     constructor(x,y){
-        super(x,y,20,20,'sprites/player_placeholder.png');
+        //x,y, width, height, spriteID,framecount
+        super(x,y,20,20,'sprites/player_placeholder.png',3);
         global.sprites.push(this);
         this.bullet=new Projectile(this.x,this.y);
     }
@@ -473,6 +429,20 @@ class Player extends Rectangle{
     }
 }
 
+class Star extends Rectangle{
+    constructor(x,y){
+        super(x,y,20,20,'sprites/star.png',0);
+        global.sprites.push(this);
+    }
+    update(){
+        this.draw();
+        this.move(0,1);
+        if(this.y>512){
+            this.setPosition(randint(0,492),-20);
+        }
+    }
+} 
+
 
 function makeSlice(invaderCount, startX,startY){
     let slice=[];
@@ -487,7 +457,25 @@ function makeSlice(invaderCount, startX,startY){
     global.pool.push(slice);
 }
 
-
+function makeStars(count){
+    let starpos=[];
+    for(let i=0; i<count; i++){
+        const x=randint(0,492);
+        const y=randint(0,492);
+        let issue=false;
+        for(let c=0; c<starpos.length; c++){
+            if((Math.abs(starpos[c][0]-x)<20)&&(Math.abs(starpos[c][1]-y)<20)){
+                issue=true;
+            }
+        }
+        if(issue){
+            i--;
+        }else{
+            global.sprites.push(new Star(x,y));
+            starpos.push(x,y);
+        }
+    }
+}
 
 function sliceLogic(){
     let left=global.pool[0][0].x;
@@ -503,7 +491,7 @@ function sliceLogic(){
             }
         }
     }
-    if(right>512){
+    if(right>492){
         global.direction=false;
         makeRow=true;
         for(let d=0; d<global.pool.length; d++){
@@ -511,7 +499,7 @@ function sliceLogic(){
                 global.pool[d][l].move(0,24);
             }
         }
-    }else if(left<0){
+    }else if(left<24){
         global.direction=true;
         makeRow=true;
         for(let d=0; d<global.pool.length; d++){
@@ -564,11 +552,14 @@ function sliceLogic(){
 
 //comment
 
+makeStars(70);
+
 makeSlice(Constants.invadersPerSlice,0,0); 
 
 sliceLogic();
 
 player=new Player(0,492);
+
 
 function update(){
     
@@ -586,8 +577,8 @@ function update(){
         }
         global.updateClock++;    
     }else{
-        Game.addText("Game Over", 256, 80, 64,'rgb(0,200,0)');
-        Game.addText("score:"+global.score, 256, 200, 32,'rgb(0,200,0)');
+        Game.addText("Game Over", global.width/8, 80, 64,'rgb(0,200,0)');
+        Game.addText("score:"+global.score, global.width/4, 200, 32,'rgb(0,200,0)');
     }
 
 
