@@ -45,7 +45,7 @@ class Tile {
     //drawImage(image, frameX, frameY, frameWidth, frameHeight, x, y, width, height)
     draw(){
         
-        if(spriteSheetID!=null){
+        if(this.id!=null){
             Game.context.drawImage(this.image, this.frameCount*this.frameSize, 0, this.frameSize, this.frameSize, this.x, this.y, this.size, this.size);
             //Game.context.drawImage(this.image,this.x,this.y);
         }else{
