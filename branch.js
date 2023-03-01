@@ -409,7 +409,7 @@ class Player extends Rectangle{
         
 
         if(this.bullet.drawSprite==false){
-            this.bullet.setPosition(this.x+(this.width/2),this.y);
+            this.bullet.setPosition(this.x+(this.width/4),this.y);
             if(32 in global.keysDown){
                 this.bullet.drawSprite=true;
                 
