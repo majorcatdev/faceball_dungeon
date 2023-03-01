@@ -25,26 +25,33 @@ function randint(min, max) {
 
 class Tile {
     constructor(x,y, size, spriteSheetID, frameSize, totalFrames, frameChangeInterval){
-      this.x = x;
-      this.y = y;
-      this.size = size;
-      this.id = spriteSheetID;
-      this.totalFrames=totalFrames;
-      this.frameCount=0;
-      this.frameSize = frameSize;
-      this.delay = 0;
-      this.FPS = frameChangeInterval;
-      this.image = new Image();
-      
-      this.image.src=this.id;
+        this.x = x;
+        this.y = y;
+        this.size = size;
+        this.id = spriteSheetID;
+        this.totalFrames=totalFrames;
+        this.frameCount=0;
+        this.frameSize = frameSize;
+        this.delay = 0;
+        this.FPS = frameChangeInterval;
+        if(spriteSheetID!=null){
+            this.image = new Image();
+    
+            this.image.src=this.id;
+        }
+
     }
     
     //drawImage(image, frameX, frameY, frameWidth, frameHeight, x, y, width, height)
     draw(){
         
-        
-        Game.context.drawImage(this.image, this.frameCount*this.frameSize, 0, this.frameSize, this.frameSize, this.x, this.y, this.size, this.size);
-        //Game.context.drawImage(this.image,this.x,this.y);
+        if(spriteSheetID!=null){
+            Game.context.drawImage(this.image, this.frameCount*this.frameSize, 0, this.frameSize, this.frameSize, this.x, this.y, this.size, this.size);
+            //Game.context.drawImage(this.image,this.x,this.y);
+        }else{
+            Game.context.fillRect(this.x,this.y,this.size,this.size);
+        }
+
     
     }
     setPosition(x,y){
@@ -69,7 +76,7 @@ class Tile {
 
 class Circle{
    
-    constructor(x,y, diamater, spriteID,frameCount){
+    constructor(x,y, diamater, spriteID, frameCount){
         this.x=x;
         this.y=y;
         this.diamater=diamater;
