@@ -6,14 +6,14 @@ let global ={
     pool: [],
     score:0,
     updateClock:0,
-    direction:true,
     playing:true,
+    map:[],
     
 }
 
 
 let Constants={
-    invadersPerSlice:10,
+    
 }
 
 function randint(min, max) {
@@ -183,28 +183,7 @@ class Rectangle{
 
 
 
-/*
-function circleMaker(){
-    
-    const width=randint(10,Constants.maxCircleSize);
-    let r=0;
-    let g=0;
-    let b=0;
-    while(true){
-        r=randint(0,255);
-        g=randint(0,255);
-        b=randint(0,255);
-        if(!((r>g+60||r<g-60)&&(r>b+60||r<b-60)&&(b>g+60||b<g-60))){
-            break;
-        }
-    }
-    const color='rgb('+r+','+g+','+b+')';
-    let circle=new Circle(randint(width/2,512-(width/2)),(width/2),width,color,Constants.fallSpeed);
-    global.sprites.push(circle);
-    global.pool.push(circle);
-    
-}
-*/
+
 
 
 
@@ -342,21 +321,7 @@ function updateSprites(){
 
 // if 32 in global.keysDown do something
 
-//impliment sprite block space invaders movement
 
-class Invader extends Rectangle{
-    constructor(x,y){
-        //x,y, width, height, spriteID,framecount
-        super(x,y,20,20,'sprites/enemy_placeholder2.png',3);
-        this.sprite.frameCount=randint(0,3);
-       
-        
-
-        
-    }
-    
-    
-}
 
 class Projectile extends Circle{
     constructor(x,y){
@@ -436,158 +401,22 @@ class Player extends Rectangle{
     }
 }
 
-class Star extends Rectangle{
-    constructor(x,y){
-        super(x,y,20,20,'sprites/star.png',0);
-        global.sprites.push(this);
-    }
-    update(){
-        this.draw();
-        this.move(0,1);
-        if(this.y>512){
-            this.setPosition(randint(0,492),-20);
-        }
-    }
-} 
-
-
-function makeSlice(invaderCount, startX,startY){
-    let slice=[];
-    let x=startX;
-    for(let i=0; i<invaderCount; i++){
-        let invader=new Invader(startX,startY);
-        global.sprites.push(invader);
-        slice.push(invader);
-        startX+=24;
-        
-    }
-    global.pool.push(slice);
-}
-
-function makeStars(count){
-    let starpos=[];
-    for(let i=0; i<count; i++){
-        const x=randint(0,492);
-        const y=randint(0,492);
-        let issue=false;
-        for(let c=0; c<starpos.length; c++){
-            if((Math.abs(starpos[c][0]-x)<20)&&(Math.abs(starpos[c][1]-y)<20)){
-                issue=true;
-            }
-        }
-        if(issue){
-            i--;
-        }else{
-            global.sprites.push(new Star(x,y));
-            starpos.push(x,y);
-        }
-    }
-}
-
-function sliceLogic(){
-    let left=global.pool[0][0].x;
-    let right=global.pool[0][0].x+global.pool[0][0].width;
-    let makeRow=false;
-    for(let d=0; d<global.pool.length; d++){
-        for(let l=0; l<global.pool[d].length; l++){
-            if(global.pool[d][l].x<left){
-                left=global.pool[d][l].x;
-            }
-            if(global.pool[d][l].x+global.pool[d][l].width>right){
-                right=global.pool[d][l].x+global.pool[d][l].width;
-            }
-        }
-    }
-    if(right>492){
-        global.direction=false;
-        makeRow=true;
-        for(let d=0; d<global.pool.length; d++){
-            for(let l=0; l<global.pool[d].length; l++){
-                global.pool[d][l].move(0,24);
-            }
-        }
-    }else if(left<24){
-        global.direction=true;
-        makeRow=true;
-        for(let d=0; d<global.pool.length; d++){
-            for(let l=0; l<global.pool[d].length; l++){
-                global.pool[d][l].move(0,24);
-                
-            }
-        }
-
-    }
-    if(makeRow==true){
-        
-        for(let i=0; i<global.pool.length; i++){
-            if(global.pool[i][0].y<0){
-                makeRow=false;
-            }
-        }
-        if(makeRow==true){
-            makeSlice(Constants.invadersPerSlice,left,0);
-        }
-    }
-    
-    for(let i=0; i<global.pool.length; i++){
-        if(global.pool[i][0].y<0){
-            for(let t=0; t<global.pool[i].length; t++){
-                global.pool[i][t].setPosition(global.pool[i][t].x,0);
-                global.pool[i][t].drawSprite=true;
-            }
-        
-        }
-    }
-
-    if(global.direction==true){
-        for(let d=0; d<global.pool.length; d++){
-            for(let l=0; l<global.pool[d].length; l++){
-                global.pool[d][l].move(24,0);
-            }
-        }
-    }
-    if(global.direction==false){
-        for(let d=0; d<global.pool.length; d++){
-            for(let l=0; l<global.pool[d].length; l++){
-                global.pool[d][l].move(-24,0);
-            }
-        }
-    }
-
-
-}
 
 
 
-makeStars(70);
-
-makeSlice(Constants.invadersPerSlice,126,0); 
 
 
 
-player=new Player(0,492);
+
+//Game.addText("text", 0, 25, 32,'rgb(0,200,0)');
 
 
 function update(){
     
     
-    //draw rect here
+
     
-    if(global.playing==true){
-       
-        updateSprites();
-        if(global.updateClock>=45){
-            global.updateClock=0;
-            sliceLogic();
-            
-            
-        }
-        Game.addText("score:"+global.score, 0, 25, 32,'rgb(0,200,0)');
-        global.updateClock++;    
-    }else{
-        Game.addText("Game Over", global.width/8, 80, 64,'rgb(0,200,0)');
-        Game.addText("score:"+global.score, global.width/4, 200, 32,'rgb(0,200,0)');
-    }
+    
 
 
 
