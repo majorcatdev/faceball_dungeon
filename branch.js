@@ -576,7 +576,7 @@ function update(){
     if(global.playing==true){
        
         updateSprites();
-        if(global.updateClock>=10){
+        if(global.updateClock>=45){
             global.updateClock=0;
             sliceLogic();
             
