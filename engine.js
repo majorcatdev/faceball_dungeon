@@ -4,16 +4,17 @@ let global ={
     gameTime: 0,
     sprites: [],
     pool: [],
+    maps:[],
     score:0,
     updateClock:0,
     playing:true,
-    map:[],
+    currentMap:[],
     
 }
 
 
 let Constants={
-    
+    tilesize:16,
 }
 
 function randint(min, max) {
@@ -298,7 +299,15 @@ addEventListener("keyup",function(e){
 
 
 
-
+function drawMap(){
+    if(global.currentMap.length>0){
+        for(let y=0; y<global.currentMap.length; y++){
+            for(let x=0; x<global.currentMap[y].length; x++){
+                global.currentMap[y][x].draw();
+            }
+        }
+    }
+}
 
 
 
@@ -313,7 +322,17 @@ function updateSprites(){
 
 
 
-
+function makeMap(){
+    let map=[];
+    for(let y=0; y<global.height/Constants.tilesize; y++){
+        let row=[];
+        for(let x=0; x<global.width/Constants.tilesize; x++){
+            row.push(new Tile(x*Constants.tilesize,y*Constants.tilesize,Constants.tilesize,'sprites/cobblestone_tile_proto.png',64,0,0));
+        }
+        map.push(row);
+    }
+    return map;
+}
 
 
 
@@ -403,7 +422,7 @@ class Player extends Rectangle{
 
 
 
-
+global.currentMap=makeMap();
 
 
 
@@ -413,7 +432,7 @@ class Player extends Rectangle{
 
 function update(){
     
-    
+    drawMap();
 
     
     
