@@ -3,7 +3,7 @@ let global ={
     lastTime: 0,
     gameTime: 0,
     sprites: [],
-    pool: [],
+    pool:[],
     maps:[],
     score:0,
     updateClock:0,
@@ -13,8 +13,9 @@ let global ={
 }
 
 
+
 let Constants={
-    tilesize:16,
+    tilesize:32,
 }
 
 function randint(min, max) {
@@ -232,7 +233,7 @@ function differentColiderCollision(rect,circle){
 let Game ={
     canvas: document.createElement("canvas"),
     start: function(){
-        this.canvas.width=512;
+        this.canvas.width=1024;
         this.canvas.height=512;
         this.context=this.canvas.getContext("2d");
         this.canvas.style.cssText='border: 2px solid white; background-color:black;'
@@ -324,10 +325,10 @@ function updateSprites(){
 
 function makeMap(){
     let map=[];
-    for(let y=0; y<global.height/Constants.tilesize; y++){
+    for(let y=0; y<16; y++){
         let row=[];
-        for(let x=0; x<global.width/Constants.tilesize; x++){
-            row.push(new Tile(x*Constants.tilesize,y*Constants.tilesize,Constants.tilesize,'sprites/cobblestone_tile_proto.png',64,0,0));
+        for(let x=0; x<32; x++){
+            row.push(new Tile(x*Constants.tilesize,y*Constants.tilesize,Constants.tilesize,'sprites/cobblestone.png',64,0,0));
         }
         map.push(row);
     }
@@ -384,39 +385,38 @@ class Projectile extends Circle{
 class Player extends Rectangle{
     constructor(x,y){
         //x,y, width, height, spriteID,framecount
-        super(x,y,20,20,'sprites/player_placeholder.png',3);
+        super(x,y,32,32,'sprites/player_placeholder.png',3);
         global.sprites.push(this);
-        this.bullet=new Projectile(this.x,this.y);
+        this.bulletPool=[];
+        this.lastBulletTimer=0;
     }
     update(){
         
         
 
-        if(this.bullet.drawSprite==false){
-            this.bullet.setPosition(this.x+(this.width/4),this.y);
-            if(32 in global.keysDown){
-                this.bullet.drawSprite=true;
-                
-            }
+        
+        if(32 in global.keysDown){
+            console.log()
             
         }
+            
+        
         if(65 in global.keysDown&&this.x>0){
-            this.move(-4,0);
+            this.move(-2,0);
         }
-        else if(68 in global.keysDown&&this.x+this.width<512){
-            this.move(4,0);
+        else if(68 in global.keysDown&&this.x+this.width<1024){
+            this.move(2,0);
         }
+
+        if(87 in global.keysDown&&this.y>0){
+            this.move(0,-2);
+        }
+        else if(83 in global.keysDown&&this.y+this.height<512){
+            this.move(0,2);
+        }
+
         this.draw();
-        for(let d=0; d<global.pool.length; d++){
-            for(let l=0; l<global.pool[d].length; l++){
-                if(global.pool[d][l].drawSprite==true){
-                    if(rectCollision(global.pool[d][l],this)){
-                        global.playing=false;
-                    }
-                }
-                
-            }
-        }
+        
     }
 }
 
@@ -424,16 +424,16 @@ class Player extends Rectangle{
 
 global.currentMap=makeMap();
 
+console.log(global.currentMap);
 
-
-
+global.sprites.push(new Player(0,0));
 //Game.addText("text", 0, 25, 32,'rgb(0,200,0)');
 
 
 function update(){
     
     drawMap();
-
+    updateSprites();
     
     
 
