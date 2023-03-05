@@ -1,32 +1,33 @@
-let global ={
+let engineVariables ={
     keysDown:{},
     lastTime: 0,
     gameTime: 0,
+    playing:true,
+}
+function randint(min, max) {
+    return Math.floor(Math.random() * (max - min+1) + min);
+}
+
+let global ={
     sprites: [],
-    pool:[],
+    pool:{"playerProjectiles":[],"enemies":[],"enemyProjectiles":[],},
     maps:[],
     score:0,
     updateClock:0,
-    playing:true,
-    currentMap:[],
-    
+    currentMap:null,
 }
-
-
 
 let Constants={
     tilesize:32,
 }
 
-function randint(min, max) {
-    return Math.floor(Math.random() * (max - min+1) + min);
-}
+
 //needs better naming
 
 //drawImage(image, frameX, frameY, frameWidth, frameHeight, x, y, width, height)
 
 class Tile {
-    constructor(x,y, size, spriteSheetID, frameSize, totalFrames, frameChangeInterval, special=null){
+    constructor(x,y, size, spriteSheetID, frameSize, totalFrames, frameChangeInterval, special=null, circle=false,color='rgb(0,0,0)'){
         this.x = x;
         this.y = y;
         this.size = size;
@@ -36,7 +37,9 @@ class Tile {
         this.frameSize = frameSize;
         this.delay = 0;
         this.FPS = frameChangeInterval;
+        this.circle=circle;
         this.special=special;
+        this.color=color;
         if(spriteSheetID!=null){
             this.image = new Image();
     
@@ -49,10 +52,23 @@ class Tile {
     draw(){
         
         if(this.id!=null){
-            Game.context.drawImage(this.image, this.frameCount*this.frameSize, 0, this.frameSize, this.frameSize, this.x, this.y, this.size, this.size);
-            //Game.context.drawImage(this.image,this.x,this.y);
+            Engine.context.drawImage(this.image, this.frameCount*this.frameSize, 0, this.frameSize, this.frameSize, this.x, this.y, this.size, this.size);
+            //Engine.context.drawImage(this.image,this.x,this.y);
         }else{
-            Game.context.fillRect(this.x,this.y,this.size,this.size);
+
+            if(this.circle){
+                Engine.context.beginPath();
+                Engine.context.arc(this.x,this.y,size/2,0,2*Math.PI);
+                Engine.context.fillStyle = this.color;
+                Engine.context.fill();
+                Engine.context.stroke();
+            }else{
+                Engine.context.beginPath();
+                Engine.context.fillStyle = this.color;
+                Engine.context.fillRect(this.x,this.y,this.size,this.size);
+                Engine.context.stroke();
+            }
+            
         }
 
     
@@ -86,8 +102,8 @@ class Circle{
         this.width=diamater;
         this.spriteID = spriteID;
         this.drawSprite=true;
-        this.sprite=new Tile(this.x-this.width/2,this.y-this.width/2,this.width*2,this.spriteID,64,frameCount,2);
-        this.sprite.FPS=0
+        this.sprite=new Tile(this.x-this.width/2,this.y-this.width/2,this.width*2,this.spriteID,64,frameCount,2,null,true,'rgb(255,0,0)');
+        this.sprite.FPS=0;
     }
     move(x,y){
         this.x+=x;
@@ -101,18 +117,16 @@ class Circle{
     }
     draw(){
         if(this.drawSprite==true){
+            this.sprite.draw();
+        }
+    }
+    animateDraw(){
+        if(this.drawSprite==true){
             this.sprite.animateDraw();
         }
     }
 
-    selfDestruct(){
-        try {
-            global.sprites.splice(global.sprites.indexOf(this),1);
-        } catch (error) {
-            return (false,"spritelist error");
-        }
-  
-    }
+    
 
     drawToggle(toggle){
         this.draw=toggle;
@@ -132,7 +146,7 @@ class Rectangle{
         this.height=height;
         this.spriteID = spriteID;
         this.drawSprite=true;
-        this.sprite=new Tile(this.x,this.y,this.width,this.spriteID,64,framecount,0);
+        this.sprite=new Tile(this.x,this.y,this.width,this.spriteID,64,framecount,0,null,false,'rgb(0,0,255)');
         this.sprite.FPS=60;
     }
     move(x,y){
@@ -147,46 +161,31 @@ class Rectangle{
     }
     draw(){
         if(this.drawSprite==true){
-            this.sprite.animateDraw();
+            this.sprite.draw();
         }
     }
     
-
+    animateDraw(){
+        if(this.drawSprite==true){
+            this.sprite.animateDraw();
+        }
+    }
 
     drawToggle(toggle){
         this.drawSprite=toggle;
     }
 
-    selfDestruct(){
-        try {
-            global.sprites.splice(global.sprites.indexOf(this),1);
-        } catch (error) {
-            return false;
-        }
-        
-    }
+    
 
     update(){
-            /*
 
-            if(65 in global.keysDown){
-            
-               
-            }
-        
-      
-            if(68 in global.keysDown){
-            
-               
-            }
-            */
         this.draw();
     }
 }
 
 
 
-class map{
+class Map{
     constructor(x, y, tileArray=[]){
         this.x=x;
         this.y=y;
@@ -224,7 +223,7 @@ class map{
 
 
 function startGame(){
-    Game.start();
+    Engine.start();
     setupy();
    
    
@@ -263,7 +262,7 @@ function differentColiderCollision(rect,circle){
 }
 
 
-let Game ={
+let Engine ={
     canvas: document.createElement("canvas"),
     start: function(){
         this.canvas.width=1024;
@@ -294,14 +293,14 @@ let Game ={
 
 function setupy(){
         let now=Date.now();
-        let dt=(now-global.lastTime)/1000.0;
-        Game.clear();
+        let dt=(now-engineVariables.lastTime)/1000.0;
+        Engine.clear();
         update();
        
-        global.gameTime=dt;
-        global.lastTime=now;
+        engineVariables.gameTime=dt;
+        engineVariables.lastTime=now;
         requestAnimFrame(setupy);
-        return global.gameTime;
+        return engineVariables.gameTime;
 
 }
 
@@ -315,11 +314,11 @@ let requestAnimFrame = (function(){
 })()
 
 addEventListener("keydown",function(e){
-    global.keysDown[e.keyCode]=true;
+    engineVariables.keysDown[e.keyCode]=true;
 
 },false);
 addEventListener("keyup",function(e){
-    delete global.keysDown[e.keyCode];
+    delete engineVariables.keysDown[e.keyCode];
 
 },false);
 
@@ -347,16 +346,16 @@ function updateSprites(){
 
 
 
-function makeTileArray(){
+function makeBasicMap(width, height){
     let map=[];
-    for(let y=0; y<16; y++){
+    for(let y=0; y<height; y++){
         let row=[];
-        for(let x=0; x<32; x++){
+        for(let x=0; x<width; x++){
             row.push(new Tile(x*Constants.tilesize,y*Constants.tilesize,Constants.tilesize,'sprites/floor.png',64,0,0));
         }
         map.push(row);
     }
-    return map;
+    return new Map(0,0,map);
 }
 
 
@@ -410,7 +409,7 @@ class Player extends Rectangle{
     constructor(x,y){
         //x,y, width, height, spriteID,framecount
         super(x,y,32,32,'sprites/player_placeholder.png',3);
-        global.sprites.push(this);
+        
         this.bulletPool=[];
         this.lastBulletTimer=0;
     }
@@ -419,23 +418,23 @@ class Player extends Rectangle{
         
 
         
-        if(32 in global.keysDown){
+        if(32 in engineVariables.keysDown){
             console.log()
             
         }
             
         
-        if(65 in global.keysDown&&this.x>0){
+        if(65 in engineVariables.keysDown&&this.x>0){
             this.move(-2,0);
         }
-        else if(68 in global.keysDown&&this.x+this.width<1024){
+        else if(68 in engineVariables.keysDown&&this.x+this.width<1024){
             this.move(2,0);
         }
 
-        if(87 in global.keysDown&&this.y>0){
+        if(87 in engineVariables.keysDown&&this.y>0){
             this.move(0,-2);
         }
-        else if(83 in global.keysDown&&this.y+this.height<512){
+        else if(83 in engineVariables.keysDown&&this.y+this.height<512){
             this.move(0,2);
         }
 
@@ -446,12 +445,12 @@ class Player extends Rectangle{
 
 
 
-global.currentMap=new map(0,0,makeTileArray());
+global.currentMap= makeBasicMap(32,16);
 
-console.log(global.currentMap);
+
 
 global.sprites.push(new Player(0,0));
-//Game.addText("text", 0, 25, 32,'rgb(0,200,0)');
+//Engine.addText("text", 0, 25, 32,'rgb(0,200,0)');
 
 
 function update(){
