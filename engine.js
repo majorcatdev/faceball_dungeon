@@ -26,7 +26,7 @@ function randint(min, max) {
 //drawImage(image, frameX, frameY, frameWidth, frameHeight, x, y, width, height)
 
 class Tile {
-    constructor(x,y, size, spriteSheetID, frameSize, totalFrames, frameChangeInterval){
+    constructor(x,y, size, spriteSheetID, frameSize, totalFrames, frameChangeInterval, special=null){
         this.x = x;
         this.y = y;
         this.size = size;
@@ -36,6 +36,7 @@ class Tile {
         this.frameSize = frameSize;
         this.delay = 0;
         this.FPS = frameChangeInterval;
+        this.special=special;
         if(spriteSheetID!=null){
             this.image = new Image();
     
@@ -86,7 +87,7 @@ class Circle{
         this.spriteID = spriteID;
         this.drawSprite=true;
         this.sprite=new Tile(this.x-this.width/2,this.y-this.width/2,this.width*2,this.spriteID,64,frameCount,2);
-        
+        this.sprite.FPS=0
     }
     move(x,y){
         this.x+=x;
@@ -132,7 +133,7 @@ class Rectangle{
         this.spriteID = spriteID;
         this.drawSprite=true;
         this.sprite=new Tile(this.x,this.y,this.width,this.spriteID,64,framecount,0);
-        this.sprite.FPS=45;
+        this.sprite.FPS=60;
     }
     move(x,y){
         this.x+=x;
@@ -185,7 +186,39 @@ class Rectangle{
 
 
 
+class map{
+    constructor(x, y, tileArray=[]){
+        this.x=x;
+        this.y=y;
+        this.tiles=tileArray;
+    }
 
+    draw(){
+        if(this.tiles.length>0){
+            for(let y=0; y<this.tiles.length; y++){
+                for(let x=0; x<this.tiles[y].length; x++){
+                    this.tiles[y][x].draw();
+                }
+            }
+        }
+    }
+    move(x,y){
+        this.x+x;
+        this.y+y;
+        if(this.tiles.length>0){
+            for(let yt=0; yt<this.tiles.length; yt++){
+                for(let xt=0; xt<this.tiles[yt].length; xt++){
+                    this.tiles[yt][xt].setPosition(this.tiles[yt][xt].x+x, this.tiles[yt][xt].y+y);
+                }
+            }
+        }
+    }
+    setPosition(x,y){
+        this.move(this.x+x, this.y+y);
+        this.x=x;
+        this.y=y;
+    }
+}
 
 
 
@@ -300,15 +333,6 @@ addEventListener("keyup",function(e){
 
 
 
-function drawMap(){
-    if(global.currentMap.length>0){
-        for(let y=0; y<global.currentMap.length; y++){
-            for(let x=0; x<global.currentMap[y].length; x++){
-                global.currentMap[y][x].draw();
-            }
-        }
-    }
-}
 
 
 
@@ -323,12 +347,12 @@ function updateSprites(){
 
 
 
-function makeMap(){
+function makeTileArray(){
     let map=[];
     for(let y=0; y<16; y++){
         let row=[];
         for(let x=0; x<32; x++){
-            row.push(new Tile(x*Constants.tilesize,y*Constants.tilesize,Constants.tilesize,'sprites/cobblestone.png',64,0,0));
+            row.push(new Tile(x*Constants.tilesize,y*Constants.tilesize,Constants.tilesize,'sprites/floor.png',64,0,0));
         }
         map.push(row);
     }
@@ -422,7 +446,7 @@ class Player extends Rectangle{
 
 
 
-global.currentMap=makeMap();
+global.currentMap=new map(0,0,makeTileArray());
 
 console.log(global.currentMap);
 
@@ -432,7 +456,7 @@ global.sprites.push(new Player(0,0));
 
 function update(){
     
-    drawMap();
+    global.currentMap.draw();
     updateSprites();
     
     
