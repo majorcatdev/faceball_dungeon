@@ -8,24 +8,16 @@ function randint(min, max) {
     return Math.floor(Math.random() * (max - min+1) + min);
 }
 
-let global ={
-    sprites: [],
-    pool:{"playerProjectiles":[],"enemies":[],"enemyProjectiles":[],},
-    maps:[],
-    score:0,
-    updateClock:0,
-    currentMap:null,
-}
-
-let Constants={
-    tilesize:32,
-}
 
 
-//needs better naming
+
 
 //drawImage(image, frameX, frameY, frameWidth, frameHeight, x, y, width, height)
 
+
+
+//make sprite sheet class, adjust tile class to use sprite sheet class. this will allow for easyer multi animation support
+//also, add support for single run sprite animations and better sprite control
 class Tile {
     constructor(x,y, size, spriteSheetID, frameSize, totalFrames, frameChangeInterval, special=null, circle=false,color='rgb(0,0,0)'){
         this.x = x;
@@ -53,7 +45,7 @@ class Tile {
         
         if(this.id!=null){
             Engine.context.drawImage(this.image, this.frameCount*this.frameSize, 0, this.frameSize, this.frameSize, this.x, this.y, this.size, this.size);
-            //Engine.context.drawImage(this.image,this.x,this.y);
+            
         }else{
 
             if(this.circle){
@@ -77,6 +69,7 @@ class Tile {
         this.x=x;
         this.y=y;
     }
+    
     animateDraw(){
         this.delay++;
         this.draw();
@@ -327,7 +320,17 @@ addEventListener("keyup",function(e){
 
 
 
+let global ={
+    sprites: [],
+    pool:{"playerProjectiles":[],"enemies":[],"enemyProjectiles":[],},
+    maps:[],
+    score:0,
+    currentMap:null,
+}
 
+let Constants={
+    tilesize:32,
+}
 
 
 
