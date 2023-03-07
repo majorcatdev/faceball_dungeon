@@ -26,20 +26,6 @@ class SpriteSheet{
         this.image = new Image();
         this.image.src=spriteSheetID;
     }
-
-
-
-    getImage(){
-        return this.image;
-    }
-
-    getTotalFrames(){
-        return this.totalFrames;
-    }
-
-    getFrameSize(){
-        return this.frameSize;
-    }
 }
 
 class Tile {
@@ -48,8 +34,9 @@ class Tile {
         this.y = y;
         this.size = size;
         this.spriteSheets=spriteSheetArray;
-        this.currentSpriteSheet=0;
-        this.frameSize = frameSize;
+        if(this.spriteSheets!=null){
+            this.currentAnimation=this.spriteSheets[0];
+        }
         this.currentFrame=0;
         this.tick = 0;
         this.FPS = frameChangeInterval;
@@ -57,12 +44,16 @@ class Tile {
         this.special=special;
         this.color=color;
     }
-    
+    changeCurrentAnimation(number){
+        this.currentAnimation=this.spriteSheets[number];
+        this.tick=0;
+        this.currentFrame=0;
+    }
     //drawImage(image, frameX, frameY, frameWidth, frameHeight, x, y, width, height)
     draw(){
         
         if(this.spriteSheets!=null){
-            Engine.context.drawImage(this.spriteSheets[this.currentSpriteSheet].getImage(), this.spriteSheets[this.currentSpriteSheet].frameSize*this.currentFrame, 0, this.spriteSheets[this.currentSpriteSheet].frameSize, this.spriteSheets[this.currentSpriteSheet].frameSize, this.x, this.y, this.size, this.size);
+            Engine.context.drawImage(this.currentSpriteSheet.getImage(), this.spriteSheets[this.currentSpriteSheet].frameSize*this.currentFrame, 0, this.spriteSheets[this.currentSpriteSheet].frameSize, this.spriteSheets[this.currentSpriteSheet].frameSize, this.x, this.y, this.size, this.size);
             
         }else{
 
