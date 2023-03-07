@@ -32,6 +32,14 @@ class SpriteSheet{
         this.frameNumber=frameNumber;
         if(this.frameNumber>this.totalFrames){
             this.frameNumber=this.totalFrames;
+            return false;
+        }
+    }
+
+    advanceFrame(){
+        this.frameNumber++;
+        if(this.frameNumber>this.totalFrames){
+            this.frameNumber=0;
         }
     }
 
@@ -42,24 +50,26 @@ class SpriteSheet{
     getTotalFrames(){
         return this.totalFrames;
     }
+
+    getFrameSize(){
+        return this.frameSize;
+    }
 }
 
 class Tile {
-    constructor(x,y, size, spriteSheet, frameSize, frameChangeInterval, special=null, circle=false,color='rgb(0,0,0)'){
+    constructor(x,y, size, spriteSheetArray, frameChangeInterval, special=null, circle=false, color='rgb(0,0,0)'){
         this.x = x;
         this.y = y;
         this.size = size;
-        this.spriteSheets;
-        this.currentSprite;
-        
-        this.frameCount=0;
+        this.spriteSheets=spriteSheetArray;
+        this.currentSpriteSheet=0;
         this.frameSize = frameSize;
         this.delay = 0;
         this.FPS = frameChangeInterval;
         this.circle=circle;
         this.special=special;
         this.color=color;
-        if(spriteSheet!=null){
+        if(spriteSheetArray!=null){
             this.image = new Image();
     
             this.image.src=this.id;
