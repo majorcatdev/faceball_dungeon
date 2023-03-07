@@ -22,26 +22,12 @@ class SpriteSheet{
     constructor(animName, spriteSheetID, frameSize, totalFrames){
         this.frameSize=frameSize;
         this.totalFrames=totalFrames;
-        this.frameNumber=0;
         this.name=animName;
         this.image = new Image();
         this.image.src=spriteSheetID;
     }
 
-    changeFrames(frameNumber){
-        this.frameNumber=frameNumber;
-        if(this.frameNumber>this.totalFrames){
-            this.frameNumber=this.totalFrames;
-            return false;
-        }
-    }
 
-    advanceFrame(){
-        this.frameNumber++;
-        if(this.frameNumber>this.totalFrames){
-            this.frameNumber=0;
-        }
-    }
 
     getImage(){
         return this.image;
@@ -64,24 +50,19 @@ class Tile {
         this.spriteSheets=spriteSheetArray;
         this.currentSpriteSheet=0;
         this.frameSize = frameSize;
-        this.delay = 0;
+        this.currentFrame=0;
+        this.tick = 0;
         this.FPS = frameChangeInterval;
         this.circle=circle;
         this.special=special;
         this.color=color;
-        if(spriteSheetArray!=null){
-            this.image = new Image();
-    
-            this.image.src=this.id;
-        }
-
     }
     
     //drawImage(image, frameX, frameY, frameWidth, frameHeight, x, y, width, height)
     draw(){
         
-        if(this.id!=null){
-            Engine.context.drawImage(this.image, this.frameCount*this.frameSize, 0, this.frameSize, this.frameSize, this.x, this.y, this.size, this.size);
+        if(this.spriteSheets!=null){
+            Engine.context.drawImage(this.spriteSheets[this.currentSpriteSheet].getImage(), this.spriteSheets[this.currentSpriteSheet].frameSize*this.currentFrame, 0, this.spriteSheets[this.currentSpriteSheet].frameSize, this.spriteSheets[this.currentSpriteSheet].frameSize, this.x, this.y, this.size, this.size);
             
         }else{
 
@@ -108,7 +89,7 @@ class Tile {
     }
     
     animateDraw(){
-        this.delay++;
+        this.tick++;
         this.draw();
         if(this.delay>=this.FPS){
             this.delay=0;
