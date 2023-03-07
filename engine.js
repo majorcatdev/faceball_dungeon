@@ -19,10 +19,10 @@ function randint(min, max) {
 //make sprite sheet class, adjust tile class to use sprite sheet class. this will allow for easyer multi animation support
 //also, add support for single run sprite animations and better sprite control
 class SpriteSheet{
-    constructor(animName, spriteSheetID, frameSize, totalFrames){
+    constructor(name, spriteSheetID, frameSize, totalFrames){
         this.frameSize=frameSize;
         this.totalFrames=totalFrames;
-        this.name=animName;
+        this.name=name;
         this.image = new Image();
         this.image.src=spriteSheetID;
     }
@@ -45,15 +45,17 @@ class Tile {
         this.color=color;
     }
     changeCurrentAnimation(number){
-        this.currentAnimation=this.spriteSheets[number];
-        this.tick=0;
-        this.currentFrame=0;
+        if(this.spriteSheets!=null){
+            this.currentAnimation=this.spriteSheets[number];
+            this.tick=0;
+            this.currentFrame=0;
+        }
     }
     //drawImage(image, frameX, frameY, frameWidth, frameHeight, x, y, width, height)
     draw(){
         
         if(this.spriteSheets!=null){
-            Engine.context.drawImage(this.currentSpriteSheet.getImage(), this.spriteSheets[this.currentSpriteSheet].frameSize*this.currentFrame, 0, this.spriteSheets[this.currentSpriteSheet].frameSize, this.spriteSheets[this.currentSpriteSheet].frameSize, this.x, this.y, this.size, this.size);
+            Engine.context.drawImage(this.currentAnimation.getImage(), this.currentAnimation.frameSize*this.currentFrame, 0, this.currentAnimation.frameSize, this.currentAnimation.frameSize, this.x, this.y, this.size, this.size);
             
         }else{
 
@@ -78,22 +80,28 @@ class Tile {
         this.x=x;
         this.y=y;
     }
-    
+    setFrame(frameNumber){
+        this.currentFrame=frameNumber;
+        if(this.currentFrame>this.currentAnimation.totalFrames){
+            this.frameNumber=this.currentAnimation.totalFrames;
+            return false;
+        }
+    }
     animateDraw(){
         this.tick++;
         this.draw();
-        if(this.delay>=this.FPS){
-            this.delay=0;
-            this.frameCount++;
-            if(this.frameCount>this.totalFrames){
-                this.frameCount=0;
+        if(this.tick>=this.FPS){
+            this.tick=0;
+            this.currentFrame++;
+            if(this.currentFrame>this.totalFrames){
+                this.currentFrame=0;
             }
         }
     }
     
     
 }
-
+//fix base classes to work with new animation system
 
 class Circle{
    
