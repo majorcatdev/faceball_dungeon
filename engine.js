@@ -18,6 +18,15 @@ function randint(min, max) {
 
 //make sprite sheet class, adjust tile class to use sprite sheet class. this will allow for easyer multi animation support
 //also, add support for single run sprite animations and better sprite control
+class SingleSpriteSheet{
+    
+}
+class SpriteSheet{
+    constructor(singleSpriteSheetArray){
+        let spriteSheets=singleSpriteSheetArray;
+
+    }
+}
 class Tile {
     constructor(x,y, size, spriteSheetID, frameSize, totalFrames, frameChangeInterval, special=null, circle=false,color='rgb(0,0,0)'){
         this.x = x;
