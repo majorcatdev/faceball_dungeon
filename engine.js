@@ -10,7 +10,7 @@ function randint(min, max) {
 
 //drawImage(image, frameX, frameY, frameWidth, frameHeight, x, y, width, height)
 
-
+//come up with spritesheet and animation wrapper classes
 
 
 class Tile {
@@ -392,6 +392,7 @@ class Projectile extends Circle{
         this.moveX=0;
         this.moveY=0;
         this.lastState=this.drawSprite;
+        this.slowDownConstant=0.01;
         
 
     }
@@ -402,8 +403,8 @@ class Projectile extends Circle{
             if ( angle < 0 ){
                 angle += Math.PI * 2;
             } 
-            this.moveX=(this.moveSpeed*0.10) * (Math.cos(angle)*(180/Math.PI));
-            this.moveY=(this.moveSpeed*0.10) * (Math.sin(angle)*(180/Math.PI));
+            this.moveX=this.moveSpeed * ((Math.cos(angle)*(180/Math.PI))*this.slowDownConstant);
+            this.moveY=this.moveSpeed * ((Math.sin(angle)*(180/Math.PI))*this.slowDownConstant);
         }
         
         if(this.drawSprite){
@@ -452,15 +453,16 @@ class Player extends Rectangle{
                 this.lastBulletTimer=0;
                 //console.log(this.bulletPool.length);
                 
-                let avalibleBullets=[];
+                let firstAvalibleBullet=null;
                 for(let i=0; i<this.bulletPool.length; i++){
                     if(this.bulletPool[i].drawSprite==false){
-                        avalibleBullets.push(this.bulletPool[i]);
+                        firstAvalibleBullet=this.bulletPool[i];
+                        break;
                     }
                 }
-                if(avalibleBullets.length>0){
-                    avalibleBullets[0].setPosition(this.x+this.width/2-15,this.y+this.height/2-15);
-                    avalibleBullets[0].drawSprite=true;
+                if(firstAvalibleBullet!=null){
+                    firstAvalibleBullet.setPosition(this.x+this.width/2-15,this.y+this.height/2-15);
+                    firstAvalibleBullet.drawSprite=true;
                 }else{
                     let newBullet=new Projectile(this.x+this.width/2-15,this.y+this.height/2-15);
                     global.sprites.push(newBullet);
