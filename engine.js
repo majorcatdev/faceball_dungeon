@@ -450,7 +450,7 @@ class Player extends Rectangle{
             
             if(32 in Engine.keysDown){
                 this.lastBulletTimer=0;
-                console.log(this.bulletPool.length);
+                //console.log(this.bulletPool.length);
                 
                 let avalibleBullets=[];
                 for(let i=0; i<this.bulletPool.length; i++){
