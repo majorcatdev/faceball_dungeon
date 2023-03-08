@@ -3,7 +3,10 @@ let engineVariables ={
     lastTime: 0,
     gameTime: 0,
     playing:true,
+    mouseX:0,
+    mouseY:0,
 }
+
 function randint(min, max) {
     return Math.floor(Math.random() * (max - min+1) + min);
 }
@@ -315,14 +318,23 @@ addEventListener("keyup",function(e){
 
 },false);
 
+addEventListener("mousemove",function(e){
+    let rect=Engine.canvas.getBoundingClientRect();
+   
+    engineVariables.mouseX=Math.floor((e.clientX-rect.left)/(rect.right-rect.left)*Engine.canvas.width);
+    engineVariables.mouseY=Math.floor((e.clientY-rect.top)/(rect.bottom-rect.top)*Engine.canvas.height);
 
+},false);
+
+    
+    
 
 
 
 
 let global ={
     sprites: [],
-    pool:{"playerProjectiles":[],"enemies":[],"enemyProjectiles":[],},
+    pool:{"enemies":[],"enemyProjectiles":[],},
     maps:[],
     score:0,
     currentMap:null,
@@ -330,6 +342,8 @@ let global ={
 
 let Constants={
     tilesize:32,
+    mapX:32,
+    mapY:16,
 }
 
 
@@ -372,10 +386,12 @@ function makeBasicMap(width, height){
 class Projectile extends Circle{
     constructor(x,y){
         //x,y, diamater, spriteID,frameCount
-        super(x,y,20,'sprites/red_bullet.png',1);
+        super(x,y,30,'sprites/red_bullet.png',1);
         this.drawSprite=false;
-        global.sprites.push(this);
+        this.sprite.FPS=5;
         this.AB=false;
+        this.moveSpeed=15;
+
         
         
 
@@ -388,20 +404,9 @@ class Projectile extends Circle{
             
             if(this.y<=0){
                 this.drawSprite=false;
+                this.setPosition(-50,-50);
             }else{
-                this.move(0,-20);
-            }
-            for(let d=0; d<global.pool.length; d++){
-                for(let l=0; l<global.pool[d].length; l++){
-                    if(global.pool[d][l].drawSprite==true){
-                        if(differentColiderCollision(global.pool[d][l],this)){
-                            this.drawSprite=false;
-                            global.pool[d][l].drawSprite=false;
-                            global.score++;
-                        }
-                    }
-                    
-                }
+                this.move(0,-15);
             }
             
         }
@@ -412,20 +417,41 @@ class Player extends Rectangle{
     constructor(x,y){
         //x,y, width, height, spriteID,framecount
         super(x,y,32,32,'sprites/player_placeholder.png',3);
-        
+        this.newBulletTime=15;
         this.bulletPool=[];
         this.lastBulletTimer=0;
+        this.sprite.FPS=15;
+        
     }
     update(){
         
-        
-
-        
-        if(32 in engineVariables.keysDown){
-            console.log()
-            
+        if(this.lastBulletTimer<this.newBulletTime){
+            this.lastBulletTimer++;
         }
-            
+
+        if(this.lastBulletTimer>=this.newBulletTime){
+            this.lastBulletTimer=0;
+            if(32 in engineVariables.keysDown){
+                console.log(this.bulletPool.length);
+                
+                    let avalibleBullets=[];
+                    for(let i=0; i<this.bulletPool.length; i++){
+                        if(this.bulletPool[i].drawSprite==false){
+                            avalibleBullets.push(this.bulletPool[i]);
+                        }
+                    }
+                    if(avalibleBullets.length>0){
+                        avalibleBullets[0].setPosition(this.x+this.width/2-15,this.y-this.height);
+                        avalibleBullets[0].drawSprite=true;
+                    }else{
+                        let newBullet=new Projectile(this.x+this.width/2-15,this.y-this.height);
+                        global.sprites.push(newBullet);
+                        this.bulletPool.push(newBullet);
+                    }
+                
+                
+            }
+        } 
         
         if(65 in engineVariables.keysDown&&this.x>0){
             this.move(-2,0);
@@ -441,14 +467,14 @@ class Player extends Rectangle{
             this.move(0,2);
         }
 
-        this.draw();
+        this.animateDraw();
         
     }
 }
 
 
 
-global.currentMap= makeBasicMap(32,16);
+global.currentMap= makeBasicMap(Constants.mapX,Constants.mapY);
 
 
 
