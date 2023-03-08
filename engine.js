@@ -1,11 +1,4 @@
-let engineVariables ={
-    keysDown:{},
-    lastTime: 0,
-    gameTime: 0,
-    playing:true,
-    mouseX:0,
-    mouseY:0,
-}
+
 
 function randint(min, max) {
     return Math.floor(Math.random() * (max - min+1) + min);
@@ -19,8 +12,7 @@ function randint(min, max) {
 
 
 
-//make sprite sheet class, adjust tile class to use sprite sheet class. this will allow for easyer multi animation support
-//also, add support for single run sprite animations and better sprite control
+
 class Tile {
     constructor(x,y, size, spriteSheetID, frameSize, totalFrames, frameChangeInterval, special=null, circle=false,color='rgb(0,0,0)'){
         this.x = x;
@@ -260,6 +252,12 @@ function differentColiderCollision(rect,circle){
 
 let Engine ={
     canvas: document.createElement("canvas"),
+    keysDown:{},
+    lastTime: 0,
+    gameTime: 0,
+    
+    mouseX:0,
+    mouseY:0,
     start: function(){
         this.canvas.width=1024;
         this.canvas.height=512;
@@ -269,7 +267,7 @@ let Engine ={
         this.interval = setInterval(update(), 250);
         this.inGame=true;
     },
-   
+    
 
     clear: function(){
         this.context.fillStyle='black';
@@ -289,14 +287,14 @@ let Engine ={
 
 function setupy(){
         let now=Date.now();
-        let dt=(now-engineVariables.lastTime)/1000.0;
+        let dt=(now-Engine.lastTime)/1000.0;
         Engine.clear();
         update();
        
-        engineVariables.gameTime=dt;
-        engineVariables.lastTime=now;
+        Engine.gameTime=dt;
+        Engine.lastTime=now;
         requestAnimFrame(setupy);
-        return engineVariables.gameTime;
+        return Engine.gameTime;
 
 }
 
@@ -310,19 +308,19 @@ let requestAnimFrame = (function(){
 })()
 
 addEventListener("keydown",function(e){
-    engineVariables.keysDown[e.keyCode]=true;
+    Engine.keysDown[e.keyCode]=true;
 
 },false);
 addEventListener("keyup",function(e){
-    delete engineVariables.keysDown[e.keyCode];
+    delete Engine.keysDown[e.keyCode];
 
 },false);
 
 addEventListener("mousemove",function(e){
     let rect=Engine.canvas.getBoundingClientRect();
    
-    engineVariables.mouseX=Math.floor((e.clientX-rect.left)/(rect.right-rect.left)*Engine.canvas.width);
-    engineVariables.mouseY=Math.floor((e.clientY-rect.top)/(rect.bottom-rect.top)*Engine.canvas.height);
+    Engine.mouseX=Math.floor((e.clientX-rect.left)/(rect.right-rect.left)*Engine.canvas.width);
+    Engine.mouseY=Math.floor((e.clientY-rect.top)/(rect.bottom-rect.top)*Engine.canvas.height);
 
 },false);
 
@@ -390,80 +388,100 @@ class Projectile extends Circle{
         this.drawSprite=false;
         this.sprite.FPS=5;
         this.AB=false;
-        this.moveSpeed=15;
-
-        
+        this.moveSpeed=1;
+        this.moveX=0;
+        this.moveY=0;
+        this.lastState=this.drawSprite;
         
 
     }
     update(){
-        
+        if(this.drawSprite==true&&this.lastState==false){
+            //prototype of directional movement code
+            let angle = Math.atan2 ( Engine.mouseY- this.y-15, Engine.mouseX - this.x-15 );
+            if ( angle < 0 ){
+                angle += Math.PI * 2;
+            } 
+            this.moveX=(this.moveSpeed*0.10) * (Math.cos(angle)*(180/Math.PI));
+            this.moveY=(this.moveSpeed*0.10) * (Math.sin(angle)*(180/Math.PI));
+        }
         
         if(this.drawSprite){
             this.sprite.animateDraw();
             
-            if(this.y<=0){
+            if(this.y<=0||this.y>=Engine.canvas.height||this.x<=0||this.x>=Engine.canvas.width){
                 this.drawSprite=false;
                 this.setPosition(-50,-50);
             }else{
-                this.move(0,-15);
+                
+
+                this.move(this.moveX,this.moveY);
+
+                
+                
+                //this.move(0,-15);
             }
             
         }
-
+        this.lastState=this.drawSprite;
     }
 }
 class Player extends Rectangle{
     constructor(x,y){
         //x,y, width, height, spriteID,framecount
-        super(x,y,32,32,'sprites/player_placeholder.png',3);
-        this.newBulletTime=15;
+        super(x,y,32,32,'sprites/mr_cactus_facing_foward.png',3);
+        this.newBulletTime=10;
         this.bulletPool=[];
         this.lastBulletTimer=0;
-        this.sprite.FPS=15;
+        this.sprite.FPS=5;
         
     }
     update(){
+        Engine.context.beginPath();
+        Engine.context.moveTo(this.x+this.width/2,this.y+this.height/2);
+        Engine.context.lineTo(Engine.mouseX, Engine.mouseY);
+        Engine.context.stroke();
         
         if(this.lastBulletTimer<this.newBulletTime){
             this.lastBulletTimer++;
         }
 
         if(this.lastBulletTimer>=this.newBulletTime){
-            this.lastBulletTimer=0;
-            if(32 in engineVariables.keysDown){
+            
+            if(32 in Engine.keysDown){
+                this.lastBulletTimer=0;
                 console.log(this.bulletPool.length);
                 
-                    let avalibleBullets=[];
-                    for(let i=0; i<this.bulletPool.length; i++){
-                        if(this.bulletPool[i].drawSprite==false){
-                            avalibleBullets.push(this.bulletPool[i]);
-                        }
+                let avalibleBullets=[];
+                for(let i=0; i<this.bulletPool.length; i++){
+                    if(this.bulletPool[i].drawSprite==false){
+                        avalibleBullets.push(this.bulletPool[i]);
                     }
-                    if(avalibleBullets.length>0){
-                        avalibleBullets[0].setPosition(this.x+this.width/2-15,this.y-this.height);
-                        avalibleBullets[0].drawSprite=true;
-                    }else{
-                        let newBullet=new Projectile(this.x+this.width/2-15,this.y-this.height);
-                        global.sprites.push(newBullet);
-                        this.bulletPool.push(newBullet);
-                    }
+                }
+                if(avalibleBullets.length>0){
+                    avalibleBullets[0].setPosition(this.x+this.width/2-15,this.y+this.height/2-15);
+                    avalibleBullets[0].drawSprite=true;
+                }else{
+                    let newBullet=new Projectile(this.x+this.width/2-15,this.y+this.height/2-15);
+                    global.sprites.push(newBullet);
+                    this.bulletPool.push(newBullet);
+                }
                 
                 
             }
         } 
         
-        if(65 in engineVariables.keysDown&&this.x>0){
+        if(65 in Engine.keysDown&&this.x>0){
             this.move(-2,0);
         }
-        else if(68 in engineVariables.keysDown&&this.x+this.width<1024){
+        else if(68 in Engine.keysDown&&this.x+this.width<1024){
             this.move(2,0);
         }
 
-        if(87 in engineVariables.keysDown&&this.y>0){
+        if(87 in Engine.keysDown&&this.y>0){
             this.move(0,-2);
         }
-        else if(83 in engineVariables.keysDown&&this.y+this.height<512){
+        else if(83 in Engine.keysDown&&this.y+this.height<512){
             this.move(0,2);
         }
 
@@ -486,7 +504,7 @@ function update(){
     
     global.currentMap.draw();
     updateSprites();
-    
+
     
 
 
