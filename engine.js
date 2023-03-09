@@ -388,7 +388,7 @@ class Projectile extends Circle{
         this.drawSprite=false;
         this.sprite.FPS=5;
         this.AB=false;
-        this.moveSpeed=1;
+        this.moveSpeed=15;
         this.moveX=0;
         this.moveY=0;
         this.lastState=this.drawSprite;
