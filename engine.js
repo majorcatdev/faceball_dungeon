@@ -507,7 +507,7 @@ function generateMap(){
         }
     }
     rooms=[];
-    roomCount=randint(10,60);
+    roomCount=randint(20,60);
     for(let r=0; r<roomCount;r++){
         const w=randint(1,16);
         const h=randint(1,16);
