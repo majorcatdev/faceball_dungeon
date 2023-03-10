@@ -520,8 +520,8 @@ function generateMap(){
     for(let r=0; r<roomCount;r++){
         const w=randint(3,16);
         const h=randint(3,16);
-        const roomX=randint(1,(Constants.mapSize[0]-3));
-        const roomY=randint(1,(Constants.mapSize[1]-3));
+        const roomX=randint(1,(Constants.mapSize[0]-4));
+        const roomY=randint(1,(Constants.mapSize[1]-4));
         rooms.push([Math.floor(roomX/2),Math.floor(roomY/2)]);
         
         
@@ -561,15 +561,35 @@ function generateMap(){
             
             if(startX>endX){
                 const xTransform=startX-endX;
-                for(let x=0; x<startX; x++){
-                    
+                for(let x=0; x<xTransform; x++){
+                    map[endY][x+endX]=1;
+                    map[endY][x+endX-1]=1;
+                    map[endY][x+endX+1]=1;
+                }
+            }else{
+                const xTransform=endX-startX;
+                for(let x=0; x<xTransform; x++){
+                    map[startY][x+startX]=1;
+                    map[startY][x+startX-1]=1;
+                    map[startY][x+startX+1]=1;
                 }
             }
-            if(randbool()){
-                
+            if(startY>endY){
+                const yTransform=startY-endY;
+                for(let y=0; y<yTransform; y++){
+                    map[y+endY][endX]=1;
+                    map[y+endY+1][endX]=1;
+                    map[y+endY-1][endX]=1;
+                }
             }else{
-
+                const yTransform=endY-startY;
+                for(let y=0; y<yTransform; y++){
+                    map[y+startY][startX]=1;
+                    map[y+startY+1][startX]=1;
+                    map[y+startY-1][startX]=1;
+                }
             }
+            
 
         }
     }
