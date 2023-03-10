@@ -350,8 +350,8 @@ let Constants={
     tilesize:32,
     mapX:32,
     mapY:16,
-    //mapSize:[64,128],
-    mapSize:[20,20],
+    mapSize:[64,128],
+    
 }
 
 
@@ -521,9 +521,9 @@ function generateMap(){
     for(let r=0; r<roomCount;r++){
         const w=randint(3,16);
         const h=randint(3,16);
-        const roomX=randint(1,(Constants.mapSize[0]-4));
-        const roomY=randint(1,(Constants.mapSize[1]-4));
-        rooms.push([Math.floor(roomX/2),Math.floor(roomY/2)]);
+        const roomX=randint(2,(Constants.mapSize[0]-4));
+        const roomY=randint(2,(Constants.mapSize[1]-4));
+        rooms.push([Math.ceil(roomX/2),Math.ceil(roomY/2)]);
         
         
         
@@ -542,8 +542,10 @@ function generateMap(){
         }
         
     }
-    //shuffle the rooms order
-   
+    for(let i=0; i<rooms.length; i++){
+        console.log(rooms[i].toString());
+    }
+    
     for(let i=0; i<rooms.length; i++){
         for(let j=0; j<rooms.length; j++){
             
@@ -555,35 +557,54 @@ function generateMap(){
 
             
             if(startX>endX){
-                const xTransform=startX-endX;
-                for(let x=0; x<xTransform; x++){
-                    map[endY][x+endX]=1;
-                    map[endY][x+endX-1]=1;
-                    map[endY][x+endX+1]=1;
+                
+                for(let x=endX; x==startX; x++){
+
+
+                    map[endY][x]=1;
+                    map[endY+1][x]=1;
+                    map[endY-1][x]=1;
                 }
+                if(startY>endY){
+                    
+                    for(let y=endY; y==startY; y++){
+                        map[y][startX]=1;
+                        map[y][startX+1]=1;
+                        map[y][startX-1]=1;
+                    }
+                }else{
+                    for(let y=startY; y==endY; y++){
+                        map[y][startX]=1;
+                        map[y][startX+1]=1;
+                        map[y][startX-1]=1;
+                    }
+                }
+
             }else{
-                const xTransform=endX-startX;
-                for(let x=0; x<xTransform; x++){
-                    map[startY][x+startX]=1;
-                    map[startY][x+startX-1]=1;
-                    map[startY][x+startX+1]=1;
+                //endX>startX
+                for(let x=startX; x==endX; x++){
+                    map[startY][x]=1;
+                    map[startY+1][x]=1;
+                    map[startY-1][x]=1;
+                }
+
+                if(startY>endY){
+                    
+                    for(let y=endY; y==startY; y++){
+                        map[y][endX]=1;
+                        map[y][endX+1]=1;
+                        map[y][endX-1]=1;
+                    }
+                }else{
+                    for(let y=startY; y==endY; y++){
+                        map[y][endX]=1;
+                        map[y][endX-1]=1;
+                        map[y][endX+1]=1;
+                    }
                 }
             }
-            if(startY>endY){
-                const yTransform=startY-endY;
-                for(let y=0; y<yTransform; y++){
-                    map[y+endY][endX]=1;
-                    map[y+endY+1][endX]=1;
-                    map[y+endY-1][endX]=1;
-                }
-            }else{
-                const yTransform=endY-startY;
-                for(let y=0; y<yTransform; y++){
-                    map[y+startY][startX]=1;
-                    map[y+startY+1][startX]=1;
-                    map[y+startY-1][startX]=1;
-                }
-            }
+            
+            
             
 
         }
@@ -591,16 +612,16 @@ function generateMap(){
 
     //print map
     for(let y=0; y<map.length; y++){
-        let row=["row:"+y+"   "];
+        let row="row:"+y+"   ";
 
         for(let x=0; x<map[y].length; x++){
             if(map[y][x]==0){
-                row.push("#");
+                row=row+("#");
             }else{
-                row.push("U");
+                row=row+("U");
             }
         }
-        console.log(row.toString());
+        console.log(row);
 
     }
 }
