@@ -513,7 +513,7 @@ function generateMap(){
         const h=randint(1,16);
         const roomX=randint(1,(Constants.mapSize[0]-1));
         const roomY=randint(1,(Constants.mapSize[1]-1));
-        rooms.push(roomX,roomY);
+        rooms.push([roomX,roomY]);
         
         
         
@@ -532,6 +532,17 @@ function generateMap(){
         }
         
     }
+    
+    let temp=[];
+    for(let i=0; i<rooms.length; i++){
+        remove=randint(0,rooms.length);
+        temp.push(rooms[remove]);
+        rooms.splice(remove,1);
+    }
+    rooms=temp;
+    for(let i=0; i<rooms.length; i++)
+
+
     for(let y=0; y<map.length; y++){
         let row=["row:"+y+"   "];
 
