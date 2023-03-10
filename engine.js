@@ -551,9 +551,22 @@ function generateMap(){
     rooms=temp;
     for(let i=0; i<rooms.length; i++){
         for(let j=0; j<rooms.length; j++){
-            let xTransform=rooms[i][0]-rooms[j][0];
-            let yTransform=rooms[i][1]-rooms[j][1];
+            
             //put code to add the paths here
+            const startX=rooms[i][0];
+            const startY=rooms[i][1];
+            const endX=rooms[j][0];
+            const endY=rooms[j][1];
+            const xTransform=startX-endX;
+            const yTransform=startY-endY;
+            if(randbool()){
+                for(let x=0;x<abs(xTransform); x++){
+                    
+                }
+            }else{
+
+            }
+
         }
     }
 
