@@ -350,7 +350,8 @@ let Constants={
     tilesize:32,
     mapX:32,
     mapY:16,
-    mapSize:[64,128],
+    //mapSize:[64,128],
+    mapSize:[20,20],
 }
 
 
@@ -542,13 +543,7 @@ function generateMap(){
         
     }
     //shuffle the rooms order
-    let temp=[];
-    for(let i=0; i<rooms.length; i++){
-        remove=randint(0,rooms.length);
-        temp.push(rooms[remove]);
-        rooms.splice(remove,1);
-    }
-    rooms=temp;
+   
     for(let i=0; i<rooms.length; i++){
         for(let j=0; j<rooms.length; j++){
             
@@ -602,7 +597,7 @@ function generateMap(){
             if(map[y][x]==0){
                 row.push("#");
             }else{
-                row.push(" ");
+                row.push("U");
             }
         }
         console.log(row.toString());
