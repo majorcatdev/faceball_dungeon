@@ -557,12 +557,16 @@ function generateMap(){
             const startY=rooms[i][1];
             const endX=rooms[j][0];
             const endY=rooms[j][1];
-            const xTransform=startX-endX;
-            const yTransform=startY-endY;
-            if(randbool()){
-                for(let x=0;x<abs(xTransform); x++){
-                    
+
+            
+            if(startX>endX){
+                const xTransform=startX-endX;
+                for(let x=0; x<startX; x++){
+                    map[startY]
                 }
+            }
+            if(randbool()){
+                
             }else{
 
             }
