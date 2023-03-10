@@ -4,7 +4,13 @@ function randint(min, max) {
     return Math.floor(Math.random() * (max - min+1) + min);
 }
 
-
+function randbool(){
+    if(randint(0,1)==1){
+        return true;
+    }else{
+        return false;
+    }
+}
 
 
 
@@ -497,6 +503,7 @@ class Player extends Rectangle{
 
 function generateMap(){
     let map=[];
+    //make the starting map
     openSpaces=0;
     for(let i=0; i<Constants.mapSize[1]; i++){
         map.push([]);
@@ -506,7 +513,9 @@ function generateMap(){
             map[y].push(0);
         }
     }
+    
     rooms=[];
+    //make the rooms
     roomCount=randint(20,60);
     for(let r=0; r<roomCount;r++){
         const w=randint(1,16);
@@ -532,7 +541,7 @@ function generateMap(){
         }
         
     }
-    
+    //shuffle the rooms order
     let temp=[];
     for(let i=0; i<rooms.length; i++){
         remove=randint(0,rooms.length);
@@ -540,9 +549,15 @@ function generateMap(){
         rooms.splice(remove,1);
     }
     rooms=temp;
-    for(let i=0; i<rooms.length; i++)
+    for(let i=0; i<rooms.length; i++){
+        for(let j=0; j<rooms.length; j++){
+            let xTransform=rooms[i][0]-rooms[j][0];
+            let yTransform=rooms[i][1]-rooms[j][1];
+            //put code to add the paths here
+        }
+    }
 
-
+    //print map
     for(let y=0; y<map.length; y++){
         let row=["row:"+y+"   "];
 
