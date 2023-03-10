@@ -344,7 +344,7 @@ let Constants={
     tilesize:32,
     mapX:32,
     mapY:16,
-    mapSize:[96,128],
+    mapSize:[64,128],
 }
 
 
@@ -507,14 +507,14 @@ function generateMap(){
         }
     }
     rooms=[];
-    roomCount=randint(1,10);
+    roomCount=randint(10,60);
     for(let r=0; r<roomCount;r++){
         const w=randint(1,16);
         const h=randint(1,16);
         const roomX=randint(1,(Constants.mapSize[0]-1));
         const roomY=randint(1,(Constants.mapSize[1]-1));
         rooms.push(roomX,roomY);
-        console.log("room paramaters: Y:"+roomY+" X:"+roomX+" W:" +w+" H:"+h);
+        
         
         
         for(let y=0; y<h; y++){
