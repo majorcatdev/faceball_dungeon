@@ -14,7 +14,7 @@ function randint(min, max) {
 
 
 class Tile {
-    constructor(x,y, size, spriteSheetID, frameSize, totalFrames, frameChangeInterval, special=null, circle=false,color='rgb(0,0,0)'){
+    constructor(x,y, size, spriteSheetID, frameSize, totalFrames, frameChangeInterval, collisionType=0, circle=false,color='rgb(0,0,0)'){
         this.x = x;
         this.y = y;
         this.size = size;
@@ -25,8 +25,9 @@ class Tile {
         this.delay = 0;
         this.FPS = frameChangeInterval;
         this.circle=circle;
-        this.special=special;
+        this.collisionType=collisionType;
         this.color=color;
+        this.isActive=true;
         if(spriteSheetID!=null){
             this.image = new Image();
     
@@ -174,10 +175,11 @@ class Rectangle{
 
 
 class Map{
-    constructor(x, y, tileArray=[]){
+    constructor(x, y, tileArray=[], openSpaces=0){
         this.x=x;
         this.y=y;
         this.tiles=tileArray;
+        this.openSpaces=openSpaces;
     }
 
     draw(){
@@ -342,6 +344,7 @@ let Constants={
     tilesize:32,
     mapX:32,
     mapY:16,
+    mapSize:[96,128],
 }
 
 
@@ -492,7 +495,57 @@ class Player extends Rectangle{
     }
 }
 
+function generateMap(){
+    let map=[];
+    openSpaces=0;
+    for(let i=0; i<Constants.mapSize[1]; i++){
+        map.push([]);
+    }
+    for(let y=0; y<Constants.mapSize[1]; y++){
+        for(let x=0; x<Constants.mapSize[0]; x++){
+            map[y].push(0);
+        }
+    }
+    rooms=[];
+    roomCount=randint(1,10);
+    for(let r=0; r<roomCount;r++){
+        const w=randint(1,16);
+        const h=randint(1,16);
+        const roomX=randint(1,(Constants.mapSize[0]-1));
+        const roomY=randint(1,(Constants.mapSize[1]-1));
+        rooms.push(roomX,roomY);
+        console.log("room paramaters: Y:"+roomY+" X:"+roomX+" W:" +w+" H:"+h);
+        
+        
+        for(let y=0; y<h; y++){
 
+           for(let x=0; x<w; x++){
+                let floorX=x+roomX;
+                let floorY=y+roomY;
+                if(floorX<Constants.mapSize[0]-1&&floorY<Constants.mapSize[1]-1){
+
+                    map[floorY][floorX]=1;
+                }
+
+           }
+            
+        }
+        
+    }
+    for(let y=0; y<map.length; y++){
+        let row=["row:"+y+"   "];
+
+        for(let x=0; x<map[y].length; x++){
+            if(map[y][x]==0){
+                row.push("#");
+            }else{
+                row.push(" ");
+            }
+        }
+        console.log(row.toString());
+
+    }
+}
 
 global.currentMap= makeBasicMap(Constants.mapX,Constants.mapY);
 
@@ -501,7 +554,7 @@ global.currentMap= makeBasicMap(Constants.mapX,Constants.mapY);
 global.sprites.push(new Player(0,0));
 //Engine.addText("text", 0, 25, 32,'rgb(0,200,0)');
 
-
+generateMap();
 function update(){
     
     global.currentMap.draw();
