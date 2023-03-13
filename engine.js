@@ -523,7 +523,15 @@ function generateMap(){
         const h=randint(3,16);
         const roomX=randint(2,(Constants.mapSize[0]-4));
         const roomY=randint(2,(Constants.mapSize[1]-4));
-        rooms.push([Math.ceil(roomX/2),Math.ceil(roomY/2)]);
+        let appX=Math.ceil(roomX/2);
+        let appY=Math.ceil(roomY/2);
+        if(appX>Constants.mapSize[0]-2){
+            appX=Constants.mapSize[0]-2;
+        }
+        if(appY>Constants.mapSize[1]-2){
+            appY=Constants.mapSize[1]-2;
+        }
+        rooms.push([appY,appX]);
         
         
         
@@ -550,10 +558,10 @@ function generateMap(){
         for(let j=0; j<rooms.length; j++){
             
             //put code to add the paths here
-            const startX=rooms[i][0];
-            const startY=rooms[i][1];
-            const endX=rooms[j][0];
-            const endY=rooms[j][1];
+            const startX=rooms[i][1];
+            const startY=rooms[i][0];
+            const endX=rooms[j][1];
+            const endY=rooms[j][0];
 
             
             if(startX>endX){
