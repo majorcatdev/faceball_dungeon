@@ -220,7 +220,7 @@ class Map{
 
 function startGame(){
     Engine.start();
-    setupy();
+    setupy(); 
    
    
 }
@@ -446,6 +446,8 @@ class Player extends Rectangle{
         this.lastBulletTimer=0;
         this.sprite.FPS=5;
         this.setPosition(Engine.canvas.width/2,Engine.canvas.height/2);
+        console.log(this.x,this.y);
+        this.sprite.setPosition(this.x,this.y);
         
     }
     update(){
@@ -551,9 +553,7 @@ function generateMap(){
         }
         
     }
-    for(let i=0; i<rooms.length; i++){
-        console.log(rooms[i].toString());
-    }
+ 
     
     for(let i=0; i<rooms.length; i++){
         for(let j=0; j<rooms.length; j++){
