@@ -445,6 +445,7 @@ class Player extends Rectangle{
         this.bulletPool=[];
         this.lastBulletTimer=0;
         this.sprite.FPS=5;
+        this.setPosition(Engine.canvas.width/2,Engine.canvas.height/2);
         
     }
     update(){
@@ -484,17 +485,17 @@ class Player extends Rectangle{
         } 
         
         if(65 in Engine.keysDown&&this.x>0){
-            this.move(-2,0);
+            global.currentMap.move(-2,0);
         }
         else if(68 in Engine.keysDown&&this.x+this.width<1024){
-            this.move(2,0);
+            global.currentMap.move(2,0);
         }
 
         if(87 in Engine.keysDown&&this.y>0){
-            this.move(0,-2);
+            global.currentMap.move(0,-2);
         }
         else if(83 in Engine.keysDown&&this.y+this.height<512){
-            this.move(0,2);
+            global.currentMap.move(0,2);
         }
 
         this.animateDraw();
@@ -619,6 +620,7 @@ function generateMap(){
     }
 
     //print map
+    /*
     for(let y=0; y<map.length; y++){
         let row="row:"+y+"   ";
 
@@ -632,6 +634,7 @@ function generateMap(){
         console.log(row);
 
     }
+    */
 }
 
 global.currentMap= makeBasicMap(Constants.mapX,Constants.mapY);
