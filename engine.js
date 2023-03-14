@@ -215,7 +215,43 @@ class Map{
     }
 }
 
-
+class CameraSystem{
+    constructor(veiwPortWidth,veiwPortHeight,simpleMap,tilesize){
+        this.x=0;
+        this.y=0;
+        this.veiwPortHeight=veiwPortHeight;
+        this.veiwPortWidth=veiwPortWidth;
+        this.simpleMap=simpleMap;
+        this.intX=0;
+        this.intY=0;
+        this.tilesize=tilesize;
+        map=[]
+        for(let y=0; y<this.veiwPortHeight+2; y++){
+            row=[];
+            for(let x=0; x<this.veiwPortWidth+2; x++){
+                row.push(new Tile(x*this.tilesize,y*this.tilesize,this.tilesize,'sprites/map_tiles.png',64,0,0));
+            }
+            map.push(row);
+        }
+    
+        this.map=new Map(-64,-64,map);
+    }
+    updateTiles(){
+        for(let y=0; y<this.veiwPortHeight; y++){
+            for(let x=0; x<this.veiwPortWidth; x++){
+                this.map.tiles[y][x].frameCount=this.simpleMap[intY+y][intX+x];
+            }
+        }
+    }
+    draw(){
+        this.map.draw();
+    }
+    move(x,y){
+        this.x=x;
+        this.y=y;
+        
+    }
+}
 
 
 function startGame(){
@@ -347,9 +383,9 @@ let global ={
 }
 
 let Constants={
-    tilesize:32,
-    mapX:32,
-    mapY:16,
+    tilesize:64,
+    mapX:16,
+    mapY:8,
     mapSize:[64,128],
     
 }
@@ -376,7 +412,7 @@ function makeBasicMap(width, height){
     for(let y=0; y<height; y++){
         let row=[];
         for(let x=0; x<width; x++){
-            row.push(new Tile(x*Constants.tilesize,y*Constants.tilesize,Constants.tilesize,'sprites/floor.png',64,0,0));
+            row.push(new Tile(x*Constants.tilesize,y*Constants.tilesize,Constants.tilesize,'sprites/map_tiles.png',64,0,0));
         }
         map.push(row);
     }
@@ -440,17 +476,18 @@ class Projectile extends Circle{
 class Player extends Rectangle{
     constructor(x,y){
         //x,y, width, height, spriteID,framecount
-        super(x,y,32,32,'sprites/mr_cactus_facing_foward.png',3);
+        super(x,y,64,64,'sprites/mr_cactus_facing_foward.png',3);
         this.newBulletTime=10;
         this.bulletPool=[];
         this.lastBulletTimer=0;
         this.sprite.FPS=5;
-        this.setPosition(Engine.canvas.width/2,Engine.canvas.height/2);
-        console.log(this.x,this.y);
-        this.sprite.setPosition(this.x,this.y);
+        this.setPosition(1024/2,512/2);
+        
+        
         
     }
     update(){
+        
         Engine.context.beginPath();
         Engine.context.moveTo(this.x+this.width/2,this.y+this.height/2);
         Engine.context.lineTo(Engine.mouseX, Engine.mouseY);
@@ -618,7 +655,7 @@ function generateMap(){
 
         }
     }
-
+    return map;
     //print map
     /*
     for(let y=0; y<map.length; y++){
@@ -637,7 +674,7 @@ function generateMap(){
     */
 }
 
-global.currentMap= makeBasicMap(Constants.mapX,Constants.mapY);
+//global.currentMap= makeBasicMap(Constants.mapX,Constants.mapY);
 
 
 
