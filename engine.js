@@ -521,8 +521,8 @@ function generateMap(){
     for(let r=0; r<roomCount;r++){
         const w=randint(3,16);
         const h=randint(3,16);
-        const roomX=randint(2,(Constants.mapSize[0]-4));
-        const roomY=randint(2,(Constants.mapSize[1]-4));
+        const roomX=randint(1,(Constants.mapSize[0]-4));
+        const roomY=randint(1,(Constants.mapSize[1]-4));
         let appX=Math.ceil(roomX/2);
         let appY=Math.ceil(roomY/2);
         if(appX>Constants.mapSize[0]-2){
