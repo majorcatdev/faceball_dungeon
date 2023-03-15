@@ -214,7 +214,7 @@ class Map{
         this.y=y;
     }
 }
-
+// idk anymore
 class CameraSystem{
     constructor(veiwPortWidth,veiwPortHeight,simpleMap,tilesize){
         this.x=0;
@@ -224,10 +224,10 @@ class CameraSystem{
         this.simpleMap=simpleMap;
         this.intX=0;
         this.intY=0;
-        this.tilesize=tilesize;
-        map=[]
+        this.tilesize=64;
+        let map=[];
         for(let y=0; y<this.veiwPortHeight+2; y++){
-            row=[];
+            let row=[];
             for(let x=0; x<this.veiwPortWidth+2; x++){
                 row.push(new Tile(x*this.tilesize,y*this.tilesize,this.tilesize,'sprites/map_tiles.png',64,0,0));
             }
@@ -237,19 +237,71 @@ class CameraSystem{
         this.map=new Map(-64,-64,map);
     }
     updateTiles(){
+        if(this.intX<1){
+            this.intX=1;
+        }
+        if(this.intY<1){
+            this.intY=1;
+        }
+        if(this.intX+this.veiwPortWidth+1>this.simpleMap[0].length){
+            this.intX=this.simpleMap[0].length-this.veiwPortWidth-1;
+        }
+        if(this.intY+this.veiwPortHeight+1>this.simpleMap.length){
+            this.intY=this.simpleMap.length-this.veiwPortHeight-1;
+        }
         for(let y=0; y<this.veiwPortHeight; y++){
             for(let x=0; x<this.veiwPortWidth; x++){
-                this.map.tiles[y][x].frameCount=this.simpleMap[intY+y][intX+x];
+                this.map.tiles[y][x].frameCount=this.simpleMap[this.intY+y][this.intX+x];
             }
         }
     }
     draw(){
         this.map.draw();
     }
+    setIntPos(x,y){
+        this.intX=x;
+        this.intY=y;
+    }
+    resetShift(){
+        this.x=0;
+        this.y=0;
+    }
+    resetMap(){
+        this.intX=0;
+        this.x=0;
+        this.y=0;
+        this.intY=0;
+    }
     move(x,y){
-        this.x=x;
-        this.y=y;
+
+        this.x+=x;
+        this.y+=y;
+        while(this.x>this.tilesize){
+            this.intX++;
+            this.x-=this.tilesize;
+            
+            
+        }
+        while(this.y>this.tilesize){
+            this.intY++;
+            this.y-=this.tilesize;
+            
+        }
+        while(this.x<this.tilesize*-1){
+            this.intX--;
+            this.x+=this.tilesize;
+            
+            
+        }
+        while(this.y<this.tilesize*-1){
+            this.intY--;
+            this.y+=this.tilesize;
+            
+        }
         
+        this.updateTiles();
+
+        this.map.setPosition(this.x,this.y);
     }
 }
 
@@ -523,17 +575,17 @@ class Player extends Rectangle{
             }
         } 
         
-        if(65 in Engine.keysDown&&this.x>0){
+        if(65 in Engine.keysDown){
             global.currentMap.move(-2,0);
         }
-        else if(68 in Engine.keysDown&&this.x+this.width<1024){
+        else if(68 in Engine.keysDown){
             global.currentMap.move(2,0);
         }
 
-        if(87 in Engine.keysDown&&this.y>0){
+        if(87 in Engine.keysDown){
             global.currentMap.move(0,-2);
         }
-        else if(83 in Engine.keysDown&&this.y+this.height<512){
+        else if(83 in Engine.keysDown){
             global.currentMap.move(0,2);
         }
 
@@ -675,7 +727,7 @@ function generateMap(){
 }
 
 //global.currentMap= makeBasicMap(Constants.mapX,Constants.mapY);
-
+global.currentMap=new CameraSystem(Constants.mapX,Constants.mapY,generateMap(),Constants.tilesize);
 
 
 global.sprites.push(new Player(0,0));
