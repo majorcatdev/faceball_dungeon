@@ -178,7 +178,24 @@ class Rectangle{
     }
 }
 
-
+class Map{
+    constructor(collums,rows,tilesize){
+        this.collums=collums;
+        this.rows=rows;
+        this.tilesize=tilesize;
+        this.mapArray=[];
+        
+        for(let y=0; y<rows; y++){
+            this.mapArray.push([]);
+            for(let x=0; x<collums; x++){
+                this.mapArray[this.mapArray.length-1].push(0);
+            }
+        }
+    }
+    getTile(x,y){
+        return this.mapArray[Math.floor(x/this.mapArray[0].length)][Math.floor(y/this.mapArray.length)]
+    }
+}
 
 
 
