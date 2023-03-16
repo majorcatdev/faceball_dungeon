@@ -224,7 +224,7 @@ class CameraSystem{
         this.simpleMap=simpleMap;
         this.intX=0;
         this.intY=0;
-        this.tilesize=64;
+        this.tilesize=tilesize;
         let map=[];
         for(let y=0; y<this.veiwPortHeight+2; y++){
             let row=[];
@@ -235,6 +235,7 @@ class CameraSystem{
         }
     
         this.map=new Map(-64,-64,map);
+        this.updateTiles();
     }
     updateTiles(){
         if(this.intX<1){
