@@ -184,6 +184,20 @@ class Map{
         this.rows=rows;
         this.tilesize=tilesize;
         this.mapArray=[];
+        this.camera={
+            x:0,
+            y:0,
+            width:0,
+            height:0,
+            speed:2,
+            maxX:map.collums*map.tilesize-this.width,
+            maxY:map.rows*map.tilesize
+            move:function(delta,x,y){
+                this.x+=x * this.speed*delta;
+                this.y+=y * this.speed*delta;
+                this.x= Math.max(0,Math.min(this.x,this.))
+            },
+        }
         
         for(let y=0; y<rows; y++){
             this.mapArray.push([]);
@@ -196,6 +210,7 @@ class Map{
         return this.mapArray[Math.floor(x/this.mapArray[0].length)][Math.floor(y/this.mapArray.length)]
     }
 }
+
 
 
 
