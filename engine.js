@@ -199,13 +199,15 @@ class Camera{
 
 }
 class Map{
-    constructor(collums,rows,tileSize){
+    constructor(collums,rows,tileSize,spriteSheet){
         this.collums=collums;
         this.rows=rows;
         this.tileSize=tileSize;
         this.mapArray=[];
         this.camera=new Camera(0,0,1024,512,2,this.rows,this.collums,this.tilesize);
-            
+        this.spriteSheet= new Image();
+    
+        this.image.src=spriteSheet;
         
         
         for(let y=0; y<rows; y++){
@@ -229,22 +231,29 @@ class Map{
     
         for (let c = startCol; c <= endCol; c++) {
             for (let r = startRow; r <= endRow; r++) {
-                const tile = map.getTile(layer, c, r);
+                const tile = map.getTile( c, r);
                 const x = (c - startCol) * this.tileSize + offsetX;
                 const y = (r - startRow) * this.tileSize + offsetY;
-                if (tile !== 0) { // 0 => empty tile
-                    this.ctx.drawImage(
-                        this.tileAtlas, // image
-                        (tile - 1) * this.tileSize, // source x
-                        0, // source y
-                        this.tileSize, // source width
-                        this.tileSize, // source height
-                        Math.round(x),  // target x
-                        Math.round(y), // target y
-                        this.tileSize, // target width
-                        this.tileSize // target height
-                    );
-                }
+                
+                   
+                this.ctx.drawImage(
+                    this.image, // image
+                    (tile) * this.tileSize, // source x
+                    0, // source y
+                    this.tileSize, // source width
+                    this.tileSize, // source height
+                    Math.round(x),  // target x
+                    Math.round(y), // target y
+                    this.tileSize, // target width
+                    this.tileSize // target height
+                );
+                       
+                
+                    
+            } 
+                    
+                    
+                
             }
         }
     }
