@@ -178,15 +178,15 @@ class Rectangle{
     }
 }
 class Camera{
-    constructor(x,y,width,height,speed,rows,collums,tileSize){
+    constructor(x,y,speed,rows,collums,tileSize){
         this.x=x;
         this.y=y;
-        this.width=width;
-        this.height=height;
         this.speed=speed;
         this.rows=rows;
         this.collums=collums;
         this.tileSize=tileSize;
+        this.width=this.collums*this.tileSize;
+        this.height=this.rows*this.tileSize;
         this.mapX=this.collums*this.tileSize-this.width;
         this.mapY=this.rows*this.tileSize-this.height;
     }
@@ -204,7 +204,7 @@ class Map{
         this.rows=rows;
         this.tileSize=tileSize;
         this.mapArray=[];
-        this.camera=new Camera(0,0,1024,512,2,this.rows,this.collums,this.tilesize);
+        this.camera=new Camera(0,0,2,this.rows,this.collums,this.tilesize);
         this.spriteSheet= new Image();
     
         this.image.src=spriteSheet;
@@ -231,7 +231,7 @@ class Map{
     
         for (let c = startCol; c <= endCol; c++) {
             for (let r = startRow; r <= endRow; r++) {
-                const tile = map.getTile( c, r);
+                const tile = this.getTile( c, r);
                 const x = (c - startCol) * this.tileSize + offsetX;
                 const y = (r - startRow) * this.tileSize + offsetY;
                 
