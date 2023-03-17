@@ -246,17 +246,11 @@ class Map{
                     Math.round(y), // target y
                     this.tileSize, // target width
                     this.tileSize // target height
-                );
-                       
-                
-                    
+                );     
             } 
-                    
-                    
-                
-            }
         }
     }
+    
 
     update(){
         let dirx = 0;
