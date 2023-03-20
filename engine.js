@@ -237,7 +237,7 @@ class Map{
                 
                    
                 this.ctx.drawImage(
-                    this.image, // image
+                    this.spriteSheet, // image
                     (tile) * this.tileSize, // source x
                     0, // source y
                     this.tileSize, // source width
@@ -255,10 +255,10 @@ class Map{
     update(){
         let dirx = 0;
         let diry = 0;
-        if (Keyboard.isDown(Keyboard.LEFT)) { dirx = -1; }
-        if (Keyboard.isDown(Keyboard.RIGHT)) { dirx = 1; }
-        if (Keyboard.isDown(Keyboard.UP)) { diry = -1; }
-        if (Keyboard.isDown(Keyboard.DOWN)) { diry = 1; }
+        if (68 in Engine.keysDown) { dirx = -1; }
+        if (65 in Engine.keysDown) { dirx = 1; }
+        if (87 in Engine.keysDown) { diry = -1; }
+        if (83 in Engine.keysDown) { diry = 1; }
     
         this.camera.move(delta, dirx, diry);
     }
@@ -390,7 +390,6 @@ addEventListener("mousemove",function(e){
 let global ={
     sprites: [],
     pool:{"enemies":[],"enemyProjectiles":[],},
-    maps:[],
     score:0,
     currentMap:null,
 }
@@ -535,19 +534,7 @@ class Player extends Rectangle{
             }
         } 
         
-        if(65 in Engine.keysDown){
-            global.currentMap.move(-2,0);
-        }
-        else if(68 in Engine.keysDown){
-            global.currentMap.move(2,0);
-        }
-
-        if(87 in Engine.keysDown){
-            global.currentMap.move(0,-2);
-        }
-        else if(83 in Engine.keysDown){
-            global.currentMap.move(0,2);
-        }
+  
 
         this.animateDraw();
         
@@ -693,7 +680,7 @@ global.currentMap= new Map(Constants.viewportSize[0],Constants.viewportSize[1],C
 global.sprites.push(new Player(0,0));
 //Engine.addText("text", 0, 25, 32,'rgb(0,200,0)');
 
-generateMap();
+
 function update(){
     
     global.currentMap.draw();
