@@ -207,7 +207,7 @@ class Map{
         this.camera=new Camera(0,0,2,this.rows,this.collums,this.tilesize);
         this.spriteSheet= new Image();
     
-        this.image.src=spriteSheet;
+        this.spriteSheet.src=spriteSheet;
         
         
         for(let y=0; y<rows; y++){
@@ -397,8 +397,7 @@ let global ={
 
 let Constants={
     tilesize:64,
-    mapX:16,
-    mapY:8,
+    viewportSize:[16,8],
     mapSize:[64,128],
     
 }
@@ -419,7 +418,7 @@ function updateSprites(){
 
 
 
-
+/*
 function makeBasicMap(width, height){
     let map=[];
     for(let y=0; y<height; y++){
@@ -431,7 +430,7 @@ function makeBasicMap(width, height){
     }
     return new Map(0,0,map);
 }
-
+*/
 
 
 
@@ -687,7 +686,7 @@ function generateMap(){
     */
 }
 
-//global.currentMap= makeBasicMap(Constants.mapX,Constants.mapY);
+global.currentMap= new Map(Constants.viewportSize[0],Constants.viewportSize[1],Constants.tilesize,'sprites/map_tiles.png');
    
 
 
