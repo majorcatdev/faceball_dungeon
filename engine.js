@@ -234,7 +234,7 @@ class Map{
                 const tile = this.getTile( c, r);
                 const x = (c - startCol) * this.tileSize + offsetX;
                 const y = (r - startRow) * this.tileSize + offsetY;
-                
+                console.log("drawing tile x:"+c+" y:"+r+" texture id:"+tile);
                    
                 this.ctx.drawImage(
                     this.spriteSheet, // image
