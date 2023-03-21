@@ -492,7 +492,7 @@ class Player extends Rectangle{
         this.bulletPool=[];
         this.lastBulletTimer=0;
         this.sprite.FPS=5;
-        this.setPosition(1024/2,512/2);
+        this.setPosition((1024/2)-Constants.tilesize,(512/2)-Constants.tilesize);
         
         
         
@@ -679,11 +679,12 @@ global.currentMap= new Map(Constants.viewportSize[0],Constants.viewportSize[1],C
 
 global.sprites.push(new Player(0,0));
 //Engine.addText("text", 0, 25, 32,'rgb(0,200,0)');
-
+console.log(global.currentMap);
 
 function update(){
     
     global.currentMap.draw();
+    
     updateSprites();
 
     
