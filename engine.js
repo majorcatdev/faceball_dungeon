@@ -187,12 +187,14 @@ class Camera{
         this.tileSize=tileSize;
         this.width=this.collums*this.tileSize;
         this.height=this.rows*this.tileSize;
-        this.mapX=this.collums*this.tileSize-this.width;
-        this.mapY=this.rows*this.tileSize-this.height;
+        this.maxX=this.collums*this.tileSize-this.width;
+        this.maxY=this.rows*this.tileSize-this.height;
     }
-    move(delta,x,y){
+    move(x,y){
+        const delta=1;
         this.x+=x * this.speed*delta;
         this.y+=y * this.speed*delta;
+       
         this.x = Math.max(0, Math.min(this.x, this.maxX));
         this.y = Math.max(0, Math.min(this.y, this.maxY));
     }
@@ -204,21 +206,25 @@ class Map{
         this.rows=rows;
         this.tileSize=tileSize;
         this.mapArray=[];
-        this.camera=new Camera(0,0,2,this.rows,this.collums,this.tilesize);
+        this.camera=new Camera(0,0,2,rows,collums,tileSize);
         this.spriteSheet= new Image();
     
         this.spriteSheet.src=spriteSheet;
         
         
         for(let y=0; y<rows; y++){
-            this.mapArray.push([]);
+            let temp=[];
             for(let x=0; x<collums; x++){
-                this.mapArray[this.mapArray.length-1].push(0);
+                temp.push(0);
             }
+            this.mapArray.push(temp);
+            
         }
     }
     getTile(x,y){
-        return this.mapArray[Math.floor(x/this.mapArray[0].length)][Math.floor(y/this.mapArray.length)]
+        
+        return this.mapArray[Math.ceil(y/this.mapArray.length)][Math.ceil(x/this.mapArray[0].length)]
+        
     }
     
     draw(){
@@ -228,15 +234,16 @@ class Map{
         const endRow = startRow + (this.camera.height / this.tileSize);
         const offsetX = -this.camera.x + startCol * this.tileSize;
         const offsetY = -this.camera.y + startRow * this.tileSize;
+        //console.log(this.camera.width,this.camera.collums,this.camera.tileSize,endCol);
     
         for (let c = startCol; c <= endCol; c++) {
             for (let r = startRow; r <= endRow; r++) {
                 const tile = this.getTile( c, r);
                 const x = (c - startCol) * this.tileSize + offsetX;
                 const y = (r - startRow) * this.tileSize + offsetY;
-                console.log("drawing tile x:"+c+" y:"+r+" texture id:"+tile);
+                
                    
-                this.ctx.drawImage(
+                Engine.context.drawImage(
                     this.spriteSheet, // image
                     (tile) * this.tileSize, // source x
                     0, // source y
@@ -249,6 +256,7 @@ class Map{
                 );     
             } 
         }
+        this.update();
     }
     
 
@@ -259,8 +267,8 @@ class Map{
         if (65 in Engine.keysDown) { dirx = 1; }
         if (87 in Engine.keysDown) { diry = -1; }
         if (83 in Engine.keysDown) { diry = 1; }
-    
-        this.camera.move(delta, dirx, diry);
+        
+        this.camera.move(dirx, diry);
     }
 }
 
@@ -679,7 +687,7 @@ global.currentMap= new Map(Constants.viewportSize[0],Constants.viewportSize[1],C
 
 global.sprites.push(new Player(0,0));
 //Engine.addText("text", 0, 25, 32,'rgb(0,200,0)');
-console.log(global.currentMap);
+
 
 function update(){
     
