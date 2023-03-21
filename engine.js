@@ -192,11 +192,12 @@ class Camera{
     }
     move(x,y){
         const delta=1;
+        
         this.x+=x * this.speed*delta;
         this.y+=y * this.speed*delta;
-       
-        this.x = Math.max(0, Math.min(this.x, this.maxX));
-        this.y = Math.max(0, Math.min(this.y, this.maxY));
+        
+        //this.x = Math.max(0, Math.min(this.x, this.maxX));
+        //this.y = Math.max(0, Math.min(this.y, this.maxY));
     }
 
 }
@@ -263,10 +264,22 @@ class Map{
     update(){
         let dirx = 0;
         let diry = 0;
-        if (68 in Engine.keysDown) { dirx = -1; }
-        if (65 in Engine.keysDown) { dirx = 1; }
-        if (87 in Engine.keysDown) { diry = -1; }
-        if (83 in Engine.keysDown) { diry = 1; }
+        if(this.camera.x>0){
+            if (65 in Engine.keysDown) { dirx = 1; }
+        }
+        if(this.camera.x+this.camera.width<this.mapArray[0].length*this.tileSize){
+            if (68 in Engine.keysDown) { dirx = -1; }
+        }
+        
+        if(this.camera.y+this.camera.height<this.mapArray.length*this.tileSize){
+            if (83 in Engine.keysDown) { diry = 1; }
+        }
+        if(this.camera.y>0){
+            if (87 in Engine.keysDown) { diry = -1; }
+        }
+        
+        
+        
         
         this.camera.move(dirx, diry);
     }
