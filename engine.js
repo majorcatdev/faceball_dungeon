@@ -190,11 +190,11 @@ class Camera{
         this.maxX=this.collums*this.tileSize-this.width;
         this.maxY=this.rows*this.tileSize-this.height;
     }
-    move(x,y){
-        const delta=1;
+    move(x,y,delta){
         
-        this.x+=x * this.speed*delta;
-        this.y+=y * this.speed*delta;
+        
+        this.x+=x * this.speed*(delta*50);
+        this.y+=y * this.speed*(delta*50);
         
         //this.x = Math.max(0, Math.min(this.x, this.maxX));
         //this.y = Math.max(0, Math.min(this.y, this.maxY));
@@ -207,15 +207,15 @@ class Map{
         this.rows=rows;
         this.tileSize=tileSize;
         this.mapArray=[];
-        this.camera=new Camera(0,0,2,rows,collums,tileSize);
+        this.camera=new Camera(64,64,5,rows,collums,tileSize);
         this.spriteSheet= new Image();
     
         this.spriteSheet.src=spriteSheet;
         
         
-        for(let y=0; y<64; y++){
+        for(let y=0; y<64+2; y++){
             let temp=[];
-            for(let x=0; x<128; x++){
+            for(let x=0; x<128+2; x++){
                 temp.push(0);
             }
             this.mapArray.push(temp);
@@ -257,37 +257,38 @@ class Map{
                 );     
             } 
         }
-        this.update();
+        
     }
     
 
-    update(){
+    update(delta){
         let dirx = 0;
         let diry = 0;
-        if(this.camera.x>0){
+        if(this.camera.x>1*this.tileSize){
             if (65 in Engine.keysDown) { dirx = -1; }
         }
-        if(this.camera.x+this.camera.width<this.mapArray[0].length*this.tileSize){
+        if(this.camera.x+this.camera.width<(this.mapArray[0].length-1)*this.tileSize){
             
             if (68 in Engine.keysDown) { dirx = 1; }
         }
         
-        if(this.camera.y+this.camera.height<this.mapArray.length*this.tileSize){
+        if(this.camera.y+this.camera.height<(this.mapArray.length-1)*this.tileSize){
             if (83 in Engine.keysDown) { diry = 1; }
         }
-        if(this.camera.y>0){
+        if(this.camera.y>1*this.tileSize){
             if (87 in Engine.keysDown) { diry = -1; }
         }
         
         
         
         
-        this.camera.move(dirx, diry);
+        this.camera.move(dirx, diry, delta);
+        this.draw();
     }
 }
 
-let delta={
-    lastTime:0,
+let Delta={
+    lastTime:Date.now(),
     getDelta:function(){
         const now=Date.now();
         const deltaT=(now-this.lastTime)/1000.0; 
@@ -714,7 +715,7 @@ global.sprites.push(new Player(0,0));
 
 function update(){
     
-    global.currentMap.draw();
+    global.currentMap.update(Delta.getDelta());
     
     updateSprites();
 
