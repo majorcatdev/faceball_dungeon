@@ -202,25 +202,18 @@ class Camera{
 
 }
 class Map{
-    constructor(collums,rows,tileSize,spriteSheet){
+    constructor(collums,rows,tileSize,mapArray,spriteSheet){
         this.collums=collums;
         this.rows=rows;
         this.tileSize=tileSize;
-        this.mapArray=[];
+        this.mapArray=mapArray;
         this.camera=new Camera(64,64,5,rows,collums,tileSize);
         this.spriteSheet= new Image();
     
         this.spriteSheet.src=spriteSheet;
         
         
-        for(let y=0; y<64+2; y++){
-            let temp=[];
-            for(let x=0; x<128+2; x++){
-                temp.push(0);
-            }
-            this.mapArray.push(temp);
-            
-        }
+        
     }
     getTile(x,y){
         
@@ -576,136 +569,20 @@ class Player extends Rectangle{
 function generateMap(){
     let map=[];
     //make the starting map
-    openSpaces=0;
-    for(let i=0; i<Constants.mapSize[1]; i++){
-        map.push([]);
+    let openSpaces=0;
+    for(let y=0; y<Constants.mapSize[1]+2; y++){
+        let temp=[];
+        for(let x=0; x<Constants.mapSize[0]+2; x++){
+            temp.push(4);
+        }
+        map.push(temp);
     }
-    for(let y=0; y<Constants.mapSize[1]; y++){
-        for(let x=0; x<Constants.mapSize[0]; x++){
-            map[y].push(0);
-        }
-    }
-    
-    rooms=[];
-    //make the rooms
-    roomCount=randint(20,60);
-    for(let r=0; r<roomCount;r++){
-        const w=randint(3,16);
-        const h=randint(3,16);
-        const roomX=randint(1,(Constants.mapSize[0]-4));
-        const roomY=randint(1,(Constants.mapSize[1]-4));
-        let appX=Math.ceil(roomX/2);
-        let appY=Math.ceil(roomY/2);
-        if(appX>Constants.mapSize[0]-2){
-            appX=Constants.mapSize[0]-2;
-        }
-        if(appY>Constants.mapSize[1]-2){
-            appY=Constants.mapSize[1]-2;
-        }
-        rooms.push([appY,appX]);
-        
-        
-        
-        for(let y=0; y<h; y++){
-
-           for(let x=0; x<w; x++){
-                let floorX=x+roomX;
-                let floorY=y+roomY;
-                if(floorX<Constants.mapSize[0]-1&&floorY<Constants.mapSize[1]-1){
-
-                    map[floorY][floorX]=1;
-                }
-
-           }
-            
-        }
-        
-    }
- 
-    
-    for(let i=0; i<rooms.length; i++){
-        for(let j=0; j<rooms.length; j++){
-            
-            //put code to add the paths here
-            const startX=rooms[i][1];
-            const startY=rooms[i][0];
-            const endX=rooms[j][1];
-            const endY=rooms[j][0];
-
-            
-            if(startX>endX){
-                
-                for(let x=endX; x==startX; x++){
-
-
-                    map[endY][x]=1;
-                    map[endY+1][x]=1;
-                    map[endY-1][x]=1;
-                }
-                if(startY>endY){
-                    
-                    for(let y=endY; y==startY; y++){
-                        map[y][startX]=1;
-                        map[y][startX+1]=1;
-                        map[y][startX-1]=1;
-                    }
-                }else{
-                    for(let y=startY; y==endY; y++){
-                        map[y][startX]=1;
-                        map[y][startX+1]=1;
-                        map[y][startX-1]=1;
-                    }
-                }
-
-            }else{
-                //endX>startX
-                for(let x=startX; x==endX; x++){
-                    map[startY][x]=1;
-                    map[startY+1][x]=1;
-                    map[startY-1][x]=1;
-                }
-
-                if(startY>endY){
-                    
-                    for(let y=endY; y==startY; y++){
-                        map[y][endX]=1;
-                        map[y][endX+1]=1;
-                        map[y][endX-1]=1;
-                    }
-                }else{
-                    for(let y=startY; y==endY; y++){
-                        map[y][endX]=1;
-                        map[y][endX-1]=1;
-                        map[y][endX+1]=1;
-                    }
-                }
-            }
-            
-            
-            
-
-        }
-    }
+    //put rest of map generation here
     return map;
-    //print map
-    /*
-    for(let y=0; y<map.length; y++){
-        let row="row:"+y+"   ";
-
-        for(let x=0; x<map[y].length; x++){
-            if(map[y][x]==0){
-                row=row+("#");
-            }else{
-                row=row+("U");
-            }
-        }
-        console.log(row);
-
-    }
-    */
+    
 }
 
-global.currentMap= new Map(Constants.viewportSize[0],Constants.viewportSize[1],Constants.tilesize,'sprites/map_tiles.png');
+global.currentMap= new Map(Constants.viewportSize[0],Constants.viewportSize[1],Constants.tilesize,generateMap(),'sprites/map_tiles.png');
    
 
 
