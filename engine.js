@@ -213,9 +213,9 @@ class Map{
         this.spriteSheet.src=spriteSheet;
         
         
-        for(let y=0; y<rows; y++){
+        for(let y=0; y<64; y++){
             let temp=[];
-            for(let x=0; x<collums; x++){
+            for(let x=0; x<128; x++){
                 temp.push(0);
             }
             this.mapArray.push(temp);
@@ -265,10 +265,11 @@ class Map{
         let dirx = 0;
         let diry = 0;
         if(this.camera.x>0){
-            if (65 in Engine.keysDown) { dirx = 1; }
+            if (65 in Engine.keysDown) { dirx = -1; }
         }
         if(this.camera.x+this.camera.width<this.mapArray[0].length*this.tileSize){
-            if (68 in Engine.keysDown) { dirx = -1; }
+            
+            if (68 in Engine.keysDown) { dirx = 1; }
         }
         
         if(this.camera.y+this.camera.height<this.mapArray.length*this.tileSize){
@@ -285,6 +286,15 @@ class Map{
     }
 }
 
+let delta={
+    lastTime:0,
+    getDelta:function(){
+        const now=Date.now();
+        const deltaT=(now-this.lastTime)/1000.0; 
+        this.lastTime=now;
+        return deltaT;
+    }
+}
 
 
 
