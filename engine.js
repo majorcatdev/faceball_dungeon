@@ -207,7 +207,7 @@ class Map{
         this.rows=rows;
         this.tileSize=tileSize;
         this.mapArray=mapArray;
-        this.camera=new Camera(64,64,5,rows,collums,tileSize);
+        this.camera=new Camera(8*this.tileSize,4*this.tileSize,5,rows,collums,tileSize);
         this.spriteSheet= new Image();
     
         this.spriteSheet.src=spriteSheet;
@@ -217,7 +217,7 @@ class Map{
     }
     getTile(x,y){
         
-        return this.mapArray[Math.ceil(y/this.mapArray.length)][Math.ceil(x/this.mapArray[0].length)]
+        return this.mapArray[Math.ceil(y/this.mapArray.length)][Math.ceil(x/this.mapArray[0].length)];
         
     }
     
@@ -257,19 +257,40 @@ class Map{
     update(delta){
         let dirx = 0;
         let diry = 0;
-        if(this.camera.x>1*this.tileSize){
+        /*
+        if(this.camera.x>8*this.tileSize){
             if (65 in Engine.keysDown) { dirx = -1; }
         }
-        if(this.camera.x+this.camera.width<(this.mapArray[0].length-1)*this.tileSize){
+        if(this.camera.x+this.camera.width<(this.mapArray[0].length-8)*this.tileSize){
             
             if (68 in Engine.keysDown) { dirx = 1; }
         }
         
-        if(this.camera.y+this.camera.height<(this.mapArray.length-1)*this.tileSize){
+        if(this.camera.y+this.camera.height<(this.mapArray.length-4)*this.tileSize){
             if (83 in Engine.keysDown) { diry = 1; }
         }
-        if(this.camera.y>1*this.tileSize){
+        if(this.camera.y>4*this.tileSize){
             if (87 in Engine.keysDown) { diry = -1; }
+        }
+        */
+        //--------------------------------------------------------------
+        if (65 in Engine.keysDown){
+            if(this.camera.x>8*this.tileSize){
+                dirx = -1; 
+            }
+        }else if(68 in Engine.keysDown){ 
+            if(this.camera.x+this.camera.width<(this.mapArray[0].length-8)*this.tileSize){ 
+                dirx = 1; 
+            }
+        }
+        if (83 in Engine.keysDown){
+            if(this.camera.y+this.camera.height<(this.mapArray.length-4)*this.tileSize){
+                diry = 1; 
+            }
+        }else if(87 in Engine.keysDown){
+            if(this.camera.y>4*this.tileSize){ 
+                diry = -1; 
+            }
         }
         
         
@@ -282,11 +303,15 @@ class Map{
 
 let Delta={
     lastTime:Date.now(),
+    deltaTime:0,
     getDelta:function(){
+        
+        return this.deltaTime;
+    },
+    updateDelta:function(){
         const now=Date.now();
-        const deltaT=(now-this.lastTime)/1000.0; 
+        this.deltaTime=(now-this.lastTime)/1000.0; 
         this.lastTime=now;
-        return deltaT;
     }
 }
 
@@ -570,9 +595,9 @@ function generateMap(){
     let map=[];
     //make the starting map
     let openSpaces=0;
-    for(let y=0; y<Constants.mapSize[1]+2; y++){
+    for(let y=0; y<Constants.mapSize[1]+8; y++){
         let temp=[];
-        for(let x=0; x<Constants.mapSize[0]+2; x++){
+        for(let x=0; x<Constants.mapSize[0]+16; x++){
             temp.push(4);
         }
         map.push(temp);
@@ -591,7 +616,7 @@ global.sprites.push(new Player(0,0));
 
 
 function update(){
-    
+    Delta.updateDelta();
     global.currentMap.update(Delta.getDelta());
     
     updateSprites();
