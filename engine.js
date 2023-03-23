@@ -1,6 +1,4 @@
 
-
-
 function randint(min, max) {
     return Math.floor(Math.random() * (max - min+1) + min);
 }
@@ -210,7 +208,6 @@ class colisionRect{
         this.yBounds=gridY*tileSize;
         this.gridX=gridX;
         this.gridY=gridY;
-
         //put special colision stuff here
     }
 }
@@ -692,4 +689,3 @@ function update(){
 
 
 }
-
