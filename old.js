@@ -6,8 +6,6 @@ function randint(min, max) {
 
 function randbool(){
     return (randint(0,1)==1);
-    
-
 }
 
 
