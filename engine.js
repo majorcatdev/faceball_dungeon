@@ -5,11 +5,9 @@ function randint(min, max) {
 }
 
 function randbool(){
-    if(randint(0,1)==1){
-        return true;
-    }else{
-        return false;
-    }
+    return (randint(0,1)==1);
+    
+
 }
 
 
