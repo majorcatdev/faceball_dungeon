@@ -624,7 +624,7 @@ function generateMap(){
         const hI=randint(3,16);
         const k=randint(5,Constants.mapSize[1]-hI);
         const h=randint(9,Constants.mapSize[0]-W);
-        roomCenters.push([Math.floor((h+W)/2),math.floor((hI+k)/2)]);
+        roomCenters.push([Math.floor((h+W)/2),Math.floor((hI+k)/2)]);
      
         for(let y=k;y<hI+k; y++){
             for(let x=h; x<h+W; x++){
@@ -636,7 +636,7 @@ function generateMap(){
             }
         }
     }
-    
+
     //put rest of map generation here
     return map;
     
