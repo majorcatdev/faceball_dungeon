@@ -174,6 +174,7 @@ class Rectangle{
         this.draw();
     }
 }
+
 class Camera{
     constructor(x,y,speed,rows,collums,tileSize){
         this.x=x;
