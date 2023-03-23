@@ -138,4 +138,14 @@ addEventListener("mousemove",function(e){
 },false);
 
     
+
+
+Constants={
+    tilesize:64,
+    mapSize:[64,128],
+}
+
+Global={
+
+}
     
