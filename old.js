@@ -1,8 +1,8 @@
 
-
 function randint(min, max) {
     return Math.floor(Math.random() * (max - min+1) + min);
 }
+
 
 function randbool(){
     if(randint(0,1)==1){
@@ -177,132 +177,171 @@ class Rectangle{
         this.draw();
     }
 }
-
-
-
-class Map{
-    constructor(x, y, tileArray=[], openSpaces=0){
+class Camera{
+    constructor(x,y,speed,rows,collums,tileSize){
         this.x=x;
         this.y=y;
-        this.tiles=tileArray;
-        this.openSpaces=openSpaces;
+        this.speed=speed;
+        this.rows=rows;
+        this.collums=collums;
+        this.tileSize=tileSize;
+        this.width=this.collums*this.tileSize;
+        this.height=this.rows*this.tileSize;
+        this.maxX=this.collums*this.tileSize-this.width;
+        this.maxY=this.rows*this.tileSize-this.height;
+    }
+    move(x,y,delta){
+        
+        
+        this.x+=x * this.speed*(delta*50);
+        this.y+=y * this.speed*(delta*50);
+        
+        //this.x = Math.max(0, Math.min(this.x, this.maxX));
+        //this.y = Math.max(0, Math.min(this.y, this.maxY));
     }
 
-    draw(){
-        if(this.tiles.length>0){
-            for(let y=0; y<this.tiles.length; y++){
-                for(let x=0; x<this.tiles[y].length; x++){
-                    this.tiles[y][x].draw();
-                }
-            }
-        }
-    }
-    move(x,y){
-        this.x+x;
-        this.y+y;
-        if(this.tiles.length>0){
-            for(let yt=0; yt<this.tiles.length; yt++){
-                for(let xt=0; xt<this.tiles[yt].length; xt++){
-                    this.tiles[yt][xt].setPosition(this.tiles[yt][xt].x+x, this.tiles[yt][xt].y+y);
-                }
-            }
-        }
-    }
-    setPosition(x,y){
-        this.move(this.x+x, this.y+y);
-        this.x=x;
-        this.y=y;
+}
+/*
+class colisionRect{
+    constructor(gridX,gridY,tileSize){
+        this.xBounds=gridX*tileSize;
+        this.yBounds=gridY*tileSize;
+        this.gridX=gridX;
+        this.gridY=gridY;
+        //put special colision stuff here
     }
 }
-// idk anymore
-class CameraSystem{
-    constructor(veiwPortWidth,veiwPortHeight,simpleMap,tilesize){
-        this.x=0;
-        this.y=0;
-        this.veiwPortHeight=veiwPortHeight;
-        this.veiwPortWidth=veiwPortWidth;
-        this.simpleMap=simpleMap;
-        this.intX=0;
-        this.intY=0;
-        this.tilesize=tilesize;
-        let map=[];
-        for(let y=0; y<this.veiwPortHeight+2; y++){
-            let row=[];
-            for(let x=0; x<this.veiwPortWidth+2; x++){
-                row.push(new Tile(x*this.tilesize,y*this.tilesize,this.tilesize,'sprites/map_tiles.png',64,0,0));
+*/
+class Map{
+    constructor(collums,rows,tileSize,mapArray,spriteSheet){
+        this.collums=collums;
+        this.rows=rows;
+        this.tileSize=tileSize;
+        this.mapArray=mapArray;
+        this.camera=new Camera(this.tileSize,this.tileSize,20,rows,collums,tileSize);
+        this.spriteSheet= new Image();
+        
+        this.spriteSheet.src=spriteSheet;
+        /*
+        for(let k=0; k<this.mapArray.length; k++){
+            let sheep=k.toString()+": ";
+            for(let h=0; h<this.mapArray[0].length; h++){
+                sheep=sheep+this.mapArray[k][h];
+                
             }
-            map.push(row);
+            console.log(sheep);
         }
+        */
+        
+    }
+    getTile(x,y){
+        
+        return this.mapArray[y][x];
+        //return this.mapArray[Math.ceil(y/this.mapArray.length)][Math.ceil(x/this.mapArray[0].length)];
+        
+        
+    }
+    getMap(){
+        return this.mapArray;
+    }
+    getCameraCoords(){
+        return [this.camera.x,this.camera.y];
+    }
     
-        this.map=new Map(-64,-64,map);
-        this.updateTiles();
-    }
-    updateTiles(){
-        if(this.intX<1){
-            this.intX=1;
-        }
-        if(this.intY<1){
-            this.intY=1;
-        }
-        if(this.intX+this.veiwPortWidth+1>this.simpleMap[0].length){
-            this.intX=this.simpleMap[0].length-this.veiwPortWidth-1;
-        }
-        if(this.intY+this.veiwPortHeight+1>this.simpleMap.length){
-            this.intY=this.simpleMap.length-this.veiwPortHeight-1;
-        }
-        for(let y=0; y<this.veiwPortHeight; y++){
-            for(let x=0; x<this.veiwPortWidth; x++){
-                this.map.tiles[y][x].frameCount=this.simpleMap[this.intY+y][this.intX+x];
-            }
-        }
-    }
     draw(){
-        this.map.draw();
-    }
-    setIntPos(x,y){
-        this.intX=x;
-        this.intY=y;
-    }
-    resetShift(){
-        this.x=0;
-        this.y=0;
-    }
-    resetMap(){
-        this.intX=0;
-        this.x=0;
-        this.y=0;
-        this.intY=0;
-    }
-    move(x,y){
-
-        this.x+=x;
-        this.y+=y;
-        while(this.x>this.tilesize){
-            this.intX++;
-            this.x-=this.tilesize;
-            
-            
-        }
-        while(this.y>this.tilesize){
-            this.intY++;
-            this.y-=this.tilesize;
-            
-        }
-        while(this.x<this.tilesize*-1){
-            this.intX--;
-            this.x+=this.tilesize;
-            
-            
-        }
-        while(this.y<this.tilesize*-1){
-            this.intY--;
-            this.y+=this.tilesize;
-            
+        const startCol = Math.floor(this.camera.x / this.tileSize);
+        const endCol = startCol + (this.camera.width / this.tileSize);
+        const startRow = Math.floor(this.camera.y / this.tileSize);
+        const endRow = startRow + (this.camera.height / this.tileSize);
+        const offsetX = -this.camera.x + startCol * this.tileSize;
+        const offsetY = -this.camera.y + startRow * this.tileSize;
+        //console.log(this.camera.width,this.camera.collums,this.camera.tileSize,endCol);
+    
+        for (let c = startCol; c <= endCol; c++) {
+            for (let r = startRow; r <= endRow; r++) {
+                const tile = this.getTile( c, r);
+                const x = (c - startCol) * this.tileSize + offsetX;
+                const y = (r - startRow) * this.tileSize + offsetY;
+                
+                
+                Engine.context.drawImage(
+                    this.spriteSheet, // image
+                    (tile) * this.tileSize, // source x
+                    0, // source y
+                    this.tileSize, // source width
+                    this.tileSize, // source height
+                    Math.round(x),  // target x
+                    Math.round(y), // target y
+                    this.tileSize, // target width
+                    this.tileSize // target height
+                );     
+            } 
         }
         
-        this.updateTiles();
+    }
+    
 
-        this.map.setPosition(this.x,this.y);
+
+    update(delta){
+        let dirx = 0;
+        let diry = 0;
+        /*
+        if(this.camera.x>8*this.tileSize){
+            if (65 in Engine.keysDown) { dirx = -1; }
+        }
+        if(this.camera.x+this.camera.width<(this.mapArray[0].length-8)*this.tileSize){
+            
+            if (68 in Engine.keysDown) { dirx = 1; }
+        }
+        
+        if(this.camera.y+this.camera.height<(this.mapArray.length-4)*this.tileSize){
+            if (83 in Engine.keysDown) { diry = 1; }
+        }
+        if(this.camera.y>4*this.tileSize){
+            if (87 in Engine.keysDown) { diry = -1; }
+        }
+        */
+        //--------------------------------------------------------------
+        if (65 in Engine.keysDown){
+            if(this.camera.x>this.tileSize){
+                dirx = -1; 
+            }
+        }else if(68 in Engine.keysDown){ 
+            if(this.camera.x+this.camera.width<(this.mapArray[0].length-8)*this.tileSize){ 
+                dirx = 1; 
+            }
+        }
+        if (83 in Engine.keysDown){
+            if(this.camera.y+this.camera.height<(this.mapArray.length-4)*this.tileSize){
+                diry = 1; 
+            }
+        }else if(87 in Engine.keysDown){
+            if(this.camera.y>this.tileSize+2){ 
+                diry = -1; 
+            }
+        }
+        
+        
+        
+        
+        this.camera.move(dirx, diry, delta);
+        this.draw();
+    }
+}
+
+
+
+let Delta={
+    lastTime:Date.now(),
+    deltaTime:0,
+    getDelta:function(){
+        
+        return this.deltaTime;
+    },
+    updateDelta:function(){
+        const now=Date.now();
+        this.deltaTime=(now-this.lastTime)/1000.0; 
+        this.lastTime=now;
     }
 }
 
@@ -430,16 +469,14 @@ addEventListener("mousemove",function(e){
 let global ={
     sprites: [],
     pool:{"enemies":[],"enemyProjectiles":[],},
-    maps:[],
     score:0,
     currentMap:null,
 }
 
 let Constants={
     tilesize:64,
-    mapX:16,
-    mapY:8,
-    mapSize:[64,128],
+    viewportSize:[16,8],
+    mapSize:[128,64],
     
 }
 
@@ -459,7 +496,7 @@ function updateSprites(){
 
 
 
-
+/*
 function makeBasicMap(width, height){
     let map=[];
     for(let y=0; y<height; y++){
@@ -471,7 +508,7 @@ function makeBasicMap(width, height){
     }
     return new Map(0,0,map);
 }
-
+*/
 
 
 
@@ -534,10 +571,13 @@ class Player extends Rectangle{
         this.bulletPool=[];
         this.lastBulletTimer=0;
         this.sprite.FPS=5;
-        this.setPosition(1024/2,512/2);
+        this.setPosition((1024/2)-Constants.tilesize,(512/2)-Constants.tilesize);
         
         
         
+    }
+    getGlobalPosition(cameraCoords){
+        return [this.x+cameraCoords[0],this.y+cameraCoords[1]];
     }
     update(){
         
@@ -576,19 +616,9 @@ class Player extends Rectangle{
             }
         } 
         
-        if(65 in Engine.keysDown){
-            global.currentMap.move(-2,0);
-        }
-        else if(68 in Engine.keysDown){
-            global.currentMap.move(2,0);
-        }
 
-        if(87 in Engine.keysDown){
-            global.currentMap.move(0,-2);
-        }
-        else if(83 in Engine.keysDown){
-            global.currentMap.move(0,2);
-        }
+        
+  
 
         this.animateDraw();
         
@@ -598,151 +628,64 @@ class Player extends Rectangle{
 function generateMap(){
     let map=[];
     //make the starting map
-    openSpaces=0;
-    for(let i=0; i<Constants.mapSize[1]; i++){
-        map.push([]);
-    }
-    for(let y=0; y<Constants.mapSize[1]; y++){
-        for(let x=0; x<Constants.mapSize[0]; x++){
-            map[y].push(0);
-        }
-    }
     
-    rooms=[];
-    //make the rooms
-    roomCount=randint(20,60);
-    for(let r=0; r<roomCount;r++){
-        const w=randint(3,16);
-        const h=randint(3,16);
-        const roomX=randint(1,(Constants.mapSize[0]-4));
-        const roomY=randint(1,(Constants.mapSize[1]-4));
-        let appX=Math.ceil(roomX/2);
-        let appY=Math.ceil(roomY/2);
-        if(appX>Constants.mapSize[0]-2){
-            appX=Constants.mapSize[0]-2;
+    for(let y=0; y<Constants.mapSize[1]+8; y++){
+        let temp=[];
+        for(let x=0; x<Constants.mapSize[0]+16; x++){
+            temp.push(4);
         }
-        if(appY>Constants.mapSize[1]-2){
-            appY=Constants.mapSize[1]-2;
-        }
-        rooms.push([appY,appX]);
-        
-        
-        
-        for(let y=0; y<h; y++){
-
-           for(let x=0; x<w; x++){
-                let floorX=x+roomX;
-                let floorY=y+roomY;
-                if(floorX<Constants.mapSize[0]-1&&floorY<Constants.mapSize[1]-1){
-
-                    map[floorY][floorX]=1;
-                }
-
-           }
-            
-        }
-        
+        map.push(temp);
     }
- 
-    
-    for(let i=0; i<rooms.length; i++){
-        for(let j=0; j<rooms.length; j++){
-            
-            //put code to add the paths here
-            const startX=rooms[i][1];
-            const startY=rooms[i][0];
-            const endX=rooms[j][1];
-            const endY=rooms[j][0];
-
-            
-            if(startX>endX){
+    const roomNum=randint(20,40);
+    let roomCenters=[];
+    for(let i=0; i<roomNum; i++){
+        
+        const W=randint(3,16);
+        const hI=randint(3,16);
+        const k=randint(5,Constants.mapSize[1]-hI);
+        const h=randint(9,Constants.mapSize[0]-W);
+        roomCenters.push([Math.floor((h+W)/2),Math.floor((hI+k)/2)]);
+     
+        for(let y=k;y<hI+k; y++){
+            for(let x=h; x<h+W; x++){
                 
-                for(let x=endX; x==startX; x++){
+                map[y][x]=0;
+                
 
-
-                    map[endY][x]=1;
-                    map[endY+1][x]=1;
-                    map[endY-1][x]=1;
-                }
-                if(startY>endY){
-                    
-                    for(let y=endY; y==startY; y++){
-                        map[y][startX]=1;
-                        map[y][startX+1]=1;
-                        map[y][startX-1]=1;
-                    }
-                }else{
-                    for(let y=startY; y==endY; y++){
-                        map[y][startX]=1;
-                        map[y][startX+1]=1;
-                        map[y][startX-1]=1;
-                    }
-                }
-
-            }else{
-                //endX>startX
-                for(let x=startX; x==endX; x++){
-                    map[startY][x]=1;
-                    map[startY+1][x]=1;
-                    map[startY-1][x]=1;
-                }
-
-                if(startY>endY){
-                    
-                    for(let y=endY; y==startY; y++){
-                        map[y][endX]=1;
-                        map[y][endX+1]=1;
-                        map[y][endX-1]=1;
-                    }
-                }else{
-                    for(let y=startY; y==endY; y++){
-                        map[y][endX]=1;
-                        map[y][endX-1]=1;
-                        map[y][endX+1]=1;
-                    }
-                }
+                
             }
-            
-            
-            
-
         }
     }
+
+    //put rest of map generation here
     return map;
-    //print map
-    /*
-    for(let y=0; y<map.length; y++){
-        let row="row:"+y+"   ";
-
-        for(let x=0; x<map[y].length; x++){
-            if(map[y][x]==0){
-                row=row+("#");
-            }else{
-                row=row+("U");
-            }
-        }
-        console.log(row);
-
-    }
-    */
+    
 }
 
-//global.currentMap= makeBasicMap(Constants.mapX,Constants.mapY);
-global.currentMap=new CameraSystem(Constants.mapX,Constants.mapY,generateMap(),Constants.tilesize);
+global.currentMap= new Map(Constants.viewportSize[0],Constants.viewportSize[1],Constants.tilesize,generateMap(),'sprites/map_tiles.png');
+   
+const player= new Player(0,0);
 
-
-global.sprites.push(new Player(0,0));
+global.sprites.push(player);
 //Engine.addText("text", 0, 25, 32,'rgb(0,200,0)');
 
-generateMap();
-function update(){
-    
-    global.currentMap.draw();
-    updateSprites();
 
+function update(){
+    Delta.updateDelta();
+    global.currentMap.update(Delta.getDelta());
     
+    updateSprites();
+    if (65 in Engine.keysDown){
+        console.log(player.getGlobalPosition(global.currentMap.getCameraCoords()));
+    }else if(68 in Engine.keysDown){ 
+        console.log(player.getGlobalPosition(global.currentMap.getCameraCoords()));
+    }else if (83 in Engine.keysDown){
+        console.log(player.getGlobalPosition(global.currentMap.getCameraCoords()));
+    }else if(87 in Engine.keysDown){
+        console.log(player.getGlobalPosition(global.currentMap.getCameraCoords()));
+    }
+    //main issue: tile is being overwritten somewhere
 
 
 
 }
-
