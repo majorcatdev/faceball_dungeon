@@ -213,7 +213,7 @@ class Map{
         this.spriteSheet= new Image();
         
         this.spriteSheet.src=spriteSheet;
-        
+        /*
         for(let k=0; k<this.mapArray.length; k++){
             let sheep=k.toString()+": ";
             for(let h=0; h<this.mapArray[0].length; h++){
@@ -222,7 +222,7 @@ class Map{
             }
             console.log(sheep);
         }
-        
+        */
         
     }
     getTile(x,y){
@@ -612,22 +612,20 @@ function generateMap(){
     for(let y=0; y<Constants.mapSize[1]+8; y++){
         let temp=[];
         for(let x=0; x<Constants.mapSize[0]+16; x++){
-            temp.push(4);
+            temp.push(5);
         }
         map.push(temp);
     }
-    const roomNum=1;//randint(20,40);
+    const roomNum=randint(20,40);
+    let roomCenters=[];
     for(let i=0; i<roomNum; i++){
-        /*
+        
         const W=randint(3,16);
         const hI=randint(3,16);
-        const k=randint(4,Constants.mapSize[1]-hI);
-        const h=randint(8,Constants.mapSize[0]-W);
-        */
-       const W=120;
-       const hI=60;
-       const k=4;
-       const h=8;
+        const k=randint(5,Constants.mapSize[1]-hI);
+        const h=randint(9,Constants.mapSize[0]-W);
+        roomCenters.push([Math.floor((h+W)/2),math.floor((hI+k)/2)]);
+     
         for(let y=k;y<hI+k; y++){
             for(let x=h; x<h+W; x++){
                 
@@ -638,6 +636,7 @@ function generateMap(){
             }
         }
     }
+    for
     //put rest of map generation here
     return map;
     
