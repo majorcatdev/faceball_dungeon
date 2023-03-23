@@ -203,6 +203,18 @@ class Camera{
     }
 
 }
+/*
+class colisionRect{
+    constructor(gridX,gridY,tileSize){
+        this.xBounds=gridX*tileSize;
+        this.yBounds=gridY*tileSize;
+        this.gridX=gridX;
+        this.gridY=gridY;
+
+        //put special colision stuff here
+    }
+}
+*/
 class Map{
     constructor(collums,rows,tileSize,mapArray,spriteSheet){
         this.collums=collums;
@@ -231,6 +243,12 @@ class Map{
         //return this.mapArray[Math.ceil(y/this.mapArray.length)][Math.ceil(x/this.mapArray[0].length)];
         
         
+    }
+    getMap(){
+        return this.mapArray;
+    }
+    getCameraCoords(){
+        return [this.camera.x,this.camera.y];
     }
     
     draw(){
@@ -561,6 +579,9 @@ class Player extends Rectangle{
         
         
     }
+    getGlobalPosition(cameraCoords){
+        return [this.x+cameraCoords[0],this.y+cameraCoords[1]];
+    }
     update(){
         
         Engine.context.beginPath();
@@ -598,6 +619,8 @@ class Player extends Rectangle{
             }
         } 
         
+
+        
   
 
         this.animateDraw();
@@ -612,7 +635,7 @@ function generateMap(){
     for(let y=0; y<Constants.mapSize[1]+8; y++){
         let temp=[];
         for(let x=0; x<Constants.mapSize[0]+16; x++){
-            temp.push(5);
+            temp.push(4);
         }
         map.push(temp);
     }
@@ -644,9 +667,9 @@ function generateMap(){
 
 global.currentMap= new Map(Constants.viewportSize[0],Constants.viewportSize[1],Constants.tilesize,generateMap(),'sprites/map_tiles.png');
    
+const player= new Player(0,0);
 
-
-global.sprites.push(new Player(0,0));
+global.sprites.push(player);
 //Engine.addText("text", 0, 25, 32,'rgb(0,200,0)');
 
 
@@ -655,7 +678,15 @@ function update(){
     global.currentMap.update(Delta.getDelta());
     
     updateSprites();
-
+    if (65 in Engine.keysDown){
+        console.log(player.getGlobalPosition(global.currentMap.getCameraCoords()));
+    }else if(68 in Engine.keysDown){ 
+        console.log(player.getGlobalPosition(global.currentMap.getCameraCoords()));
+    }else if (83 in Engine.keysDown){
+        console.log(player.getGlobalPosition(global.currentMap.getCameraCoords()));
+    }else if(87 in Engine.keysDown){
+        console.log(player.getGlobalPosition(global.currentMap.getCameraCoords()));
+    }
     //main issue: tile is being overwritten somewhere
 
 
