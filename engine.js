@@ -224,7 +224,7 @@ class Map{
         
     }
     getTile(x,y){
-        //this function is non functional. it only gives wrong numbers
+        //this function doesnt work
         return this.mapArray[Math.ceil(y/this.mapArray.length)][Math.ceil(x/this.mapArray[0].length)];
         
         
