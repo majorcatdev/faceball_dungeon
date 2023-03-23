@@ -1,8 +1,10 @@
 
 
+
 function randint(min, max) {
     return Math.floor(Math.random() * (max - min+1) + min);
 }
+
 
 function randbool(){
     if(randint(0,1)==1){
@@ -263,6 +265,7 @@ class Map{
     }
     
 
+
     update(delta){
         let dirx = 0;
         let diry = 0;
@@ -310,6 +313,8 @@ class Map{
     }
 }
 
+
+
 let Delta={
     lastTime:Date.now(),
     deltaTime:0,
@@ -323,7 +328,6 @@ let Delta={
         this.lastTime=now;
     }
 }
-
 
 
 function startGame(){
