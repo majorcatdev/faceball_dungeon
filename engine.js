@@ -636,7 +636,7 @@ function generateMap(){
             }
         }
     }
-    for
+    
     //put rest of map generation here
     return map;
     
