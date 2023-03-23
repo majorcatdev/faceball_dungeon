@@ -207,7 +207,7 @@ class Map{
         this.rows=rows;
         this.tileSize=tileSize;
         this.mapArray=mapArray;
-        this.camera=new Camera(8*this.tileSize,4*this.tileSize,5,rows,collums,tileSize);
+        this.camera=new Camera(8*this.tileSize,4*this.tileSize,20,rows,collums,tileSize);
         this.spriteSheet= new Image();
     
         this.spriteSheet.src=spriteSheet;
@@ -236,7 +236,7 @@ class Map{
                 const x = (c - startCol) * this.tileSize + offsetX;
                 const y = (r - startRow) * this.tileSize + offsetY;
                 
-                   
+                
                 Engine.context.drawImage(
                     this.spriteSheet, // image
                     (tile) * this.tileSize, // source x
@@ -447,7 +447,7 @@ let global ={
 let Constants={
     tilesize:64,
     viewportSize:[16,8],
-    mapSize:[64,128],
+    mapSize:[128,64],
     
 }
 
@@ -594,13 +594,35 @@ class Player extends Rectangle{
 function generateMap(){
     let map=[];
     //make the starting map
-    let openSpaces=0;
+    
     for(let y=0; y<Constants.mapSize[1]+8; y++){
         let temp=[];
         for(let x=0; x<Constants.mapSize[0]+16; x++){
-            temp.push(4);
+            temp.push(0);
         }
         map.push(temp);
+    }
+    const roomNum=1;//randint(20,40);
+    for(let i=0; i<roomNum; i++){
+        /*
+        const W=randint(3,16);
+        const hI=randint(3,16);
+        const k=randint(4,Constants.mapSize[1]-hI);
+        const h=randint(8,Constants.mapSize[0]-W);
+        */
+       const W=120;
+       const hI=60;
+       const k=4;
+       const h=8;
+        for(let y=k;y<hI+k; y++){
+            for(let x=h; x<h+W; x++){
+                
+                map[y][x]=4;
+                
+
+                
+            }
+        }
     }
     //put rest of map generation here
     return map;
@@ -621,7 +643,7 @@ function update(){
     
     updateSprites();
 
-    
+    //main issue: tile is being overwritten somewhere
 
 
 
