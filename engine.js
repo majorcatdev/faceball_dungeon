@@ -211,19 +211,22 @@ class Map{
         this.spriteSheet= new Image();
     
         this.spriteSheet.src=spriteSheet;
+        /*
         for(let k=0; k<this.mapArray.length; k++){
-            let sheep=k.toString();
+            let sheep=k.toString()+": ";
             for(let h=0; h<this.mapArray[0].length; h++){
                 sheep=sheep+this.mapArray[k][h];
+                
             }
             console.log(sheep);
         }
-        
+        */
         
     }
     getTile(x,y){
-        
+        //this function is non functional. it only gives wrong numbers
         return this.mapArray[Math.ceil(y/this.mapArray.length)][Math.ceil(x/this.mapArray[0].length)];
+        
         
     }
     
