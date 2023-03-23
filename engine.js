@@ -211,7 +211,13 @@ class Map{
         this.spriteSheet= new Image();
     
         this.spriteSheet.src=spriteSheet;
-        
+        for(let k=0; k<this.mapArray.length; k++){
+            let sheep=k.toString();
+            for(let h=0; h<this.mapArray[0].length; h++){
+                sheep=sheep+this.mapArray[k][h];
+            }
+            console.log(sheep);
+        }
         
         
     }
