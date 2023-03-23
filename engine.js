@@ -209,11 +209,11 @@ class Map{
         this.rows=rows;
         this.tileSize=tileSize;
         this.mapArray=mapArray;
-        this.camera=new Camera(8*this.tileSize,4*this.tileSize,20,rows,collums,tileSize);
+        this.camera=new Camera(this.tileSize,this.tileSize,20,rows,collums,tileSize);
         this.spriteSheet= new Image();
-    
+        
         this.spriteSheet.src=spriteSheet;
-        /*
+        
         for(let k=0; k<this.mapArray.length; k++){
             let sheep=k.toString()+": ";
             for(let h=0; h<this.mapArray[0].length; h++){
@@ -222,12 +222,13 @@ class Map{
             }
             console.log(sheep);
         }
-        */
+        
         
     }
     getTile(x,y){
-        //this function doesnt work
-        return this.mapArray[Math.ceil(y/this.mapArray.length)][Math.ceil(x/this.mapArray[0].length)];
+        
+        return this.mapArray[y][x];
+        //return this.mapArray[Math.ceil(y/this.mapArray.length)][Math.ceil(x/this.mapArray[0].length)];
         
         
     }
@@ -287,7 +288,7 @@ class Map{
         */
         //--------------------------------------------------------------
         if (65 in Engine.keysDown){
-            if(this.camera.x>8*this.tileSize){
+            if(this.camera.x>this.tileSize){
                 dirx = -1; 
             }
         }else if(68 in Engine.keysDown){ 
@@ -300,7 +301,7 @@ class Map{
                 diry = 1; 
             }
         }else if(87 in Engine.keysDown){
-            if(this.camera.y>4*this.tileSize){ 
+            if(this.camera.y>this.tileSize+2){ 
                 diry = -1; 
             }
         }
@@ -611,7 +612,7 @@ function generateMap(){
     for(let y=0; y<Constants.mapSize[1]+8; y++){
         let temp=[];
         for(let x=0; x<Constants.mapSize[0]+16; x++){
-            temp.push(0);
+            temp.push(4);
         }
         map.push(temp);
     }
@@ -630,7 +631,7 @@ function generateMap(){
         for(let y=k;y<hI+k; y++){
             for(let x=h; x<h+W; x++){
                 
-                map[y][x]=4;
+                map[y][x]=0;
                 
 
                 
