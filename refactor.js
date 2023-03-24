@@ -35,8 +35,9 @@ class tile{
         this.spriteSheet=this.animationArray[index];
         this.frame=0;
     }
-
+    //add rest of class here
 }
+//add the other classes here
 
 
 
@@ -330,6 +331,9 @@ Constants={
 Global={
 
 }
+
+
+//add the functions here
 
 function houseKeeping(){
     Delta.updateDelta();
