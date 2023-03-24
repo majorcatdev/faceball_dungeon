@@ -9,9 +9,34 @@ function randbool(){
 
 
 
+class spriteSheet{
+    constructor(spriteSheetID,tileSize,frameCount){
+        this.spriteSheet=new Image();
+        this.spriteSheet.src=spriteSheetID;
+        this.frameCount=frameCount;
+        this.tileSize=tileSize;
 
+    }
+    
 
+}
 
+class tile{
+    constructor(globalX,globalY,frameSize,spriteSheet=null,animationArray=[]){
+        this.x=globalX;
+        this.y=globalY;
+        this.frameSize=frameSize;
+        this.spriteSheet=spriteSheet;
+        this.animationArray=animationArray;
+        this.primitive="square";
+        this.frame=0;
+    }
+    changeSpriteSheet(index){
+        this.spriteSheet=this.animationArray[index];
+        this.frame=0;
+    }
+
+}
 
 
 
@@ -121,25 +146,28 @@ class Map{
     
 
 
-    update(delta){
+    move(delta,direction){
         let dirx = 0;
         let diry = 0;
        
-       
-        if (65 in Engine.keysDown){
+        
+        
+
+        
+        if (direction==2){
             if(this.camera.x>this.tileSize){
                 dirx = -1; 
             }
-        }else if(68 in Engine.keysDown){ 
+        }else if(direction==4){ 
             if(this.camera.x+this.camera.width<(this.mapArray[0].length-8)*this.tileSize){ 
                 dirx = 1; 
             }
         }
-        if (83 in Engine.keysDown){
+        if (direction==3){
             if(this.camera.y+this.camera.height<(this.mapArray.length-4)*this.tileSize){
                 diry = 1; 
             }
-        }else if(87 in Engine.keysDown){
+        }else if(direction==1){
             if(this.camera.y>this.tileSize+2){ 
                 diry = -1; 
             }
