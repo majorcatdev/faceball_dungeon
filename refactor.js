@@ -7,12 +7,36 @@ function randbool(){
     return (randint(0,1)==1);
 }
 
+function drawColision(x1,y1,w1,h1, x2,y2,w2,h2){
+    return (
+        x1 < x2 + w2 &&
+        rect1.x + rect1.width > rect2.x &&
+        rect1.y < rect2.y + rect2.height &&
+        rect1.height + rect1.y > rect2.y
+    ) 
+      
+}
+
+/*
+camera system code idea:
+everything keeps track of cooridinates in global scale. 
+to draw stuff,
+run drawColision() between the camera and the sprite and if it returns true
+the sprite will be drawn at the coordinates of the sprite, minus the cameras's current position
+
+*edge points, can be more than four, see circles
+*/
+
+
+
+
+
 
 
 class spriteSheet{
     constructor(spriteSheetID,tileSize,frameCount){
-        this.spriteSheet=new Image();
-        this.spriteSheet.src=spriteSheetID;
+        this.spriteSheetImage=new Image();
+        this.spriteSheetImage.src=spriteSheetID;
         this.frameCount=frameCount;
         this.tileSize=tileSize;
 
@@ -22,18 +46,23 @@ class spriteSheet{
 }
 
 class tile{
-    constructor(globalX,globalY,frameSize,spriteSheet=null,animationArray=[]){
+    constructor(globalX,globalY,size,spriteSheet,animationArray=[]){
         this.x=globalX;
         this.y=globalY;
-        this.frameSize=frameSize;
+        this.size=size;
         this.spriteSheet=spriteSheet;
         this.animationArray=animationArray;
-        this.primitive="square";
         this.frame=0;
     }
     changeSpriteSheet(index){
         this.spriteSheet=this.animationArray[index];
         this.frame=0;
+    }
+    draw(frame=0){
+        
+        if(this.spriteSheet.frameCount>frame){
+            //placeholder
+        }
     }
     //add rest of class here
 }
