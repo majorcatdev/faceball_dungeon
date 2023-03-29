@@ -248,7 +248,7 @@ function initialize(){
        
         Engine.gameTime=dt;
         Engine.lastTime=now;
-        requestAnimFrame(setupy);
+        requestAnimFrame(initialize);
         return Engine.gameTime;
 
 }
@@ -283,15 +283,7 @@ addEventListener("mousemove",function(e){
     
 
 
-function drawColision(x1,y1,w1,h1,   x2,y2,w2,h2){
-    return (
-        x1 < x2 + w2 &&
-        x1 + w1 > x2 &&
-        y1 < y2 + h2 &&
-        h1 + y1 > y2
-    ) 
-      
-}
+
 
 /*
 camera system code idea:
@@ -309,15 +301,61 @@ the sprite will be drawn at the coordinates of the sprite, minus the cameras's c
 
 
 
-class SpriteSheet{
-    constructor(spriteSheetID,tileSize,frameCount){
-        this.spriteSheetImage=new Image();
-        this.spriteSheetImage.src=spriteSheetID;
+class SpriteModule{
+    constructor(spriteSheetID,tileWidth,tileHeight, fps, frameCount){
+        this.spriteSheet=new Image();
+        this.spriteSheet.src=spriteSheetID;
         this.frameCount=frameCount;
-        this.tileSize=tileSize;
+        this.tileWidth=tileWidth;
+        this.tileHeight=tileHeight;
+        this.frame=0;
+        this.fps=60/fps;
+        this.delayAcumulator=0;
 
     }
-    
+    drawColision(x1,y1,w1,h1,   x2,y2,w2,h2){
+        return (
+            x1 < x2 + w2 &&
+            x1 + w1 > x2 &&
+            y1 < y2 + h2 &&
+            h1 + y1 > y2
+        ) 
+          
+    }
+    draw(x,y,width,height,frame,Camera){
+        if(this.drawColision(x,y,width,height,Camera.x,Camera.y,Camera.width,Camera.height)){
+            if(frame<this.frameCount){
+
+                    //drawImage(image, frameX, frameY, frameWidth, frameHeight, x, y, width, height)
+                Engine.context.drawImage(this.spriteSheet, frame*this.tileSize, 0, this.tileWidth, this.tileHeight, x-camera.x, y-camera.y, width, height);
+            }else{
+                return false;
+            }
+        }
+        
+    }
+    animateReset(){
+        this.frame=0;
+        this.delayAcumulator=0;
+    }
+    animateDraw(deltaTime,x,y,width,height,Camera){
+        
+        this.delayAcumulator+=deltaTime()*1000;
+        if(this.delayAcumulator>this.fps){
+            while(this.delayAcumulator>this.fps){
+                this.delayAcumulator-=this.fps;
+                
+                this.frame++;
+                if(this.frame>this.frameCount-1){
+                    this.frame=0;
+                }
+            }
+            this.delayAcumulator=0;
+        }
+        this.draw(x,y,width,height,this.frame,Camera);
+        
+        
+    }
 
 }
 //posibly not neccesary
@@ -344,14 +382,15 @@ class Sprite{
     //add rest of class here
 }
 */
-//add the other classes here
 
-class Rectangle{
-    constructor(){
+
+//populate this class
+class Sprite{
+    constructor(x,y,width,height,SpriteModule){
         
     }
 }
-
+//add the other stuff here
 
 
 
@@ -378,5 +417,6 @@ function houseKeeping(){
 
 function update(){
     houseKeeping();
+    
 }
     
