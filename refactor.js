@@ -65,6 +65,7 @@ class Map{
         */
         
     }
+    
     getTile(x,y){
         
         return this.mapArray[y][x];
@@ -75,8 +76,8 @@ class Map{
     getMap(){
         return this.mapArray;
     }
-    getCameraCoords(){
-        return [this.camera.x,this.camera.y];
+    getCameraCoordsAndBounds(){
+        return [this.camera.x,this.camera.y,this.camera.width,this.camera.height];
     }
     
     draw(){
@@ -121,20 +122,20 @@ class Map{
         
 
         
-        if (direction==2){
+        if (direction[0]==1){
             if(this.camera.x>this.tileSize){
                 dirx = -1; 
             }
-        }else if(direction==4){ 
+        }else if(direction[0]==2){ 
             if(this.camera.x+this.camera.width<(this.mapArray[0].length-8)*this.tileSize){ 
                 dirx = 1; 
             }
         }
-        if (direction==3){
+        if (direction[1]==1){
             if(this.camera.y+this.camera.height<(this.mapArray.length-4)*this.tileSize){
                 diry = 1; 
             }
-        }else if(direction==1){
+        }else if(direction[1]==2){
             if(this.camera.y>this.tileSize+2){ 
                 diry = -1; 
             }
@@ -144,7 +145,7 @@ class Map{
         
         
         this.camera.move(dirx, diry, delta);
-        this.draw();
+        
     }
 }
 
@@ -301,7 +302,7 @@ the sprite will be drawn at the coordinates of the sprite, minus the cameras's c
 
 
 
-class SpriteModule{
+class SpriteRenderer{
     constructor(spriteSheetID,tileWidth,tileHeight, fps, frameCount){
         this.spriteSheet=new Image();
         this.spriteSheet.src=spriteSheetID;
@@ -322,12 +323,14 @@ class SpriteModule{
         ) 
           
     }
-    draw(x,y,width,height,frame,Camera){
-        if(this.drawColision(x,y,width,height,Camera.x,Camera.y,Camera.width,Camera.height)){
+    draw(x,y,width,height,frame,CameraStuff){
+        if(this.drawColision(x,y,width,height,CameraStuff[0],CameraStuff[1],CameraStuff[2],CameraStuff[3])){
+            
             if(frame<this.frameCount){
-
-                    //drawImage(image, frameX, frameY, frameWidth, frameHeight, x, y, width, height)
-                Engine.context.drawImage(this.spriteSheet, frame*this.tileSize, 0, this.tileWidth, this.tileHeight, x-camera.x, y-camera.y, width, height);
+              
+                //drawImage(image, frameX, frameY, frameWidth, frameHeight, x, y, width, height)
+            
+                Engine.context.drawImage(this.spriteSheet, frame*this.tileWidth, 0, this.tileWidth, this.tileHeight, x-CameraStuff[0], y-CameraStuff[1], width, height);
             }else{
                 return false;
             }
@@ -338,9 +341,9 @@ class SpriteModule{
         this.frame=0;
         this.delayAcumulator=0;
     }
-    animateDraw(deltaTime,x,y,width,height,Camera){
+    animateDraw(deltaTime,x,y,width,height,CameraStuff){
         
-        this.delayAcumulator+=deltaTime()*1000;
+        this.delayAcumulator+=deltaTime*100;
         if(this.delayAcumulator>this.fps){
             while(this.delayAcumulator>this.fps){
                 this.delayAcumulator-=this.fps;
@@ -352,7 +355,7 @@ class SpriteModule{
             }
             this.delayAcumulator=0;
         }
-        this.draw(x,y,width,height,this.frame,Camera);
+        this.draw(x,y,width,height,this.frame,CameraStuff);
         
         
     }
@@ -386,12 +389,12 @@ class Sprite{
 
 //populate this class
 class Sprite{
-    constructor(x,y,width,height,SpriteModule){
+    constructor(x,y,width,height,SpriteRenderer){
         this.x=x;
         this.y=y;
         this.width=width;
         this.height=height;
-        this.SpriteModule=SpriteModule;
+        this.SpriteRenderer=SpriteRenderer;
     }
     setPosition(x,y){
         this.x=x;
@@ -401,11 +404,11 @@ class Sprite{
         this.x+=x;
         this.y+=y;
     }
-    draw(frameNum,camera){
-        this.SpriteModule.draw(this.x, this.y, this.width, this.height, frameNum, camera);
+    draw(frameNum,cameraCollisionStuff){
+        this.SpriteRenderer.draw(this.x, this.y, this.width, this.height, frameNum, cameraCollisionStuff);
     }
-    animateDraw(delta,camera){
-        this.SpriteModule.animateDraw(delta,this.x,this.y,this.width,this.height,camera);
+    animateDraw(delta,cameraCollisionStuff){
+        this.SpriteRenderer.animateDraw(delta,this.x,this.y,this.width,this.height,cameraCollisionStuff);
     }
     update(){
         //placeholder
@@ -414,40 +417,95 @@ class Sprite{
 //add the other stuff here
 
 class EntitySprite extends Sprite{
-    constructor(x,y,width,height,spriteModuleArray){
-        super(x,y,width,height,spriteModuleArray[0]);
-        this.spriteModuleArray=spriteModuleArray;
+    constructor(x,y,width,height,SpriteRendererArray){
+        super(x,y,width,height,SpriteRendererArray[0]);
+        this.SpriteRendererArray=SpriteRendererArray;
 
     }
     changeAnimation(animIndex){
-        this.SpriteModule.animateReset();
-        this.SpriteModule=this.spriteModuleArray[animIndex];
+        this.SpriteRenderer.animateReset();
+        this.SpriteRenderer=this.SpriteRendererArray[animIndex];
     }
 }
+
 
    
 
 
 Constants={
-    tilesize:64,
+    tileSize:64,
     mapSize:[64,128],
+    veiwportSize:[16,8],
+
 }
 
 Global={
 
 }
 
+function generateTempMap(){
+    let map=[];
+    for(let y=0; y<Constants.mapSize[0]+8;y++){
+        let temp=[];
+        for(let x=0; x<Constants.mapSize[1]+16;x++){
+            temp.push(0);
+        }
+        map.push(temp);
+    }
+    return map;
+}
+
+
+
+const MapRenderer=new Map(Constants.veiwportSize[0],Constants.veiwportSize[1],Constants.tileSize,generateTempMap(),'sprites/map_tiles.png'); 
+
+
+
+class Player extends EntitySprite{
+    constructor(x,y){
+        super(x,y,Constants.tileSize,Constants.tileSize,[new SpriteRenderer('sprites/mr_cactus_facing_foward.png',Constants.tileSize,Constants.tileSize,12,4),
+        new SpriteRenderer('sprites/mr_cactus_facing_left.png',Constants.tileSize,Constants.tileSize,12,4),
+        new SpriteRenderer('sprites/mr_cactus_facing_back.png',Constants.tileSize,Constants.tileSize,12,4),
+        new SpriteRenderer('sprites/mr_cactus_facing_right.png',Constants.tileSize,Constants.tileSize,12,4)]);
+        
+    }
+    update(delta,cameraCollisionStuff){
+        this.setPosition(cameraCollisionStuff[0]+(cameraCollisionStuff[2]/2),cameraCollisionStuff[1]+(cameraCollisionStuff[3]/2));
+        this.animateDraw(delta,cameraCollisionStuff);
+        let direction=[0,0];
+        if(87 in Engine.keysDown){
+            direction[1]=2;
+        }
+        else if(83 in Engine.keysDown){
+            direction[1]=1;
+        }
+        if(65 in Engine.keysDown){
+            direction[0]=1;
+        }
+        else if(68 in Engine.keysDown){
+            direction[0]=2;
+        }
+        
+        MapRenderer.move(delta,direction);
+   
+    }
+}
+
+
+
 
 //add the functions here
 
 function houseKeeping(){
     Delta.updateDelta();
+    MapRenderer.draw();
 }
 
-
+const player=new Player(-50,-50);
 
 function update(){
     houseKeeping();
-    
+  
+    player.update(Delta.getDelta(),MapRenderer.getCameraCoordsAndBounds());
 }
     
