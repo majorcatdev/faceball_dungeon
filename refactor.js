@@ -387,12 +387,43 @@ class Sprite{
 //populate this class
 class Sprite{
     constructor(x,y,width,height,SpriteModule){
-        
+        this.x=x;
+        this.y=y;
+        this.width=width;
+        this.height=height;
+        this.SpriteModule=SpriteModule;
+    }
+    setPosition(x,y){
+        this.x=x;
+        this.y=y;
+    }
+    move(x,y){
+        this.x+=x;
+        this.y+=y;
+    }
+    draw(frameNum,camera){
+        this.SpriteModule.draw(this.x, this.y, this.width, this.height, frameNum, camera);
+    }
+    animateDraw(delta,camera){
+        this.SpriteModule.animateDraw(delta,this.x,this.y,this.width,this.height,camera);
+    }
+    update(){
+        //placeholder
     }
 }
 //add the other stuff here
 
+class EntitySprite extends Sprite{
+    constructor(x,y,width,height,spriteModuleArray){
+        super(x,y,width,height,spriteModuleArray[0]);
+        this.spriteModuleArray=spriteModuleArray;
 
+    }
+    changeAnimation(animIndex){
+        this.SpriteModule.animateReset();
+        this.SpriteModule=this.spriteModuleArray[animIndex];
+    }
+}
 
    
 
