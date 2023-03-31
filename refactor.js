@@ -467,25 +467,43 @@ class Player extends EntitySprite{
         new SpriteRenderer('sprites/mr_cactus_facing_left.png',Constants.tileSize,Constants.tileSize,12,4),
         new SpriteRenderer('sprites/mr_cactus_facing_back.png',Constants.tileSize,Constants.tileSize,12,4),
         new SpriteRenderer('sprites/mr_cactus_facing_right.png',Constants.tileSize,Constants.tileSize,12,4)]);
+        this.direction=1;
         
     }
     update(delta,cameraCollisionStuff){
-        this.setPosition(cameraCollisionStuff[0]+(cameraCollisionStuff[2]/2),cameraCollisionStuff[1]+(cameraCollisionStuff[3]/2));
+        this.setPosition(cameraCollisionStuff[0]+(cameraCollisionStuff[2]/2)-this.width/2,cameraCollisionStuff[1]+(cameraCollisionStuff[3]/2)-this.height/2);
         this.animateDraw(delta,cameraCollisionStuff);
         let direction=[0,0];
-        if(87 in Engine.keysDown){
-            direction[1]=2;
-        }
-        else if(83 in Engine.keysDown){
-            direction[1]=1;
-        }
+
         if(65 in Engine.keysDown){
             direction[0]=1;
+            if(this.direction!=2){
+                this.changeAnimation(1);
+                this.direction=2;
+            }
         }
         else if(68 in Engine.keysDown){
             direction[0]=2;
+
+            if(this.direction!=4){
+                this.changeAnimation(3);
+                this.direction=4;
+            }
         }
-        
+        if(87 in Engine.keysDown){
+            direction[1]=2;
+            if(this.direction!=3&&direction[0]==0){
+                this.changeAnimation(2);
+                this.direction=3;
+            }
+        }
+        else if(83 in Engine.keysDown){
+            direction[1]=1;
+            if(this.direction!=1&&direction[0]==0){
+                this.changeAnimation(0);
+                this.direction=1;
+            }
+        }
         MapRenderer.move(delta,direction);
    
     }
