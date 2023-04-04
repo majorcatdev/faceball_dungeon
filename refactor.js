@@ -448,9 +448,14 @@ function generateTempMap(){
     for(let y=0; y<Constants.mapSize[0]+8;y++){
         let temp=[];
         for(let x=0; x<Constants.mapSize[1]+16;x++){
-            temp.push(0);
+            temp.push(4);
         }
         map.push(temp);
+    }
+    for(let y=8; y<Constants.mapSize[0]; y++){
+        for(let x=16; x<Constants.mapSize[1];x++){
+            map[y][x]=0;
+        }
     }
     return map;
 }
